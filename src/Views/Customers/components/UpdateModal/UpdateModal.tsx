@@ -3,13 +3,49 @@ import { Modal } from "react-bootstrap";
 import UpdateForm from "../UpdateForm";
 import api from "../../../../services/Api";
 
+interface alertValues {
+  variant:
+    | "danger"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "info"
+    | "dark"
+    | "light"
+    | undefined;
+  message: string;
+}
+
+interface Addresses {
+  street_address: string;
+  city: string;
+  zip: string;
+  country: string;
+  state: string;
+}
+
+interface TableData {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email_address: string;
+  cpf: string;
+  phone_number: string;
+  createdAt: string;
+  Addresses: Addresses[];
+}
+
 interface Props {
   customerId: number | null;
   show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
+  setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
+  setCustomers: React.Dispatch<React.SetStateAction<TableData[]>>;
 }
 
-interface Addresses {
+interface AddressesFormData {
   id: number;
   street_address: string;
   city: string;
@@ -26,10 +62,17 @@ interface FormData {
   cpf: string;
   phone_number: string;
   createdAt: string;
-  Addresses: Addresses[];
+  Addresses: AddressesFormData[];
 }
 
-const UpdateModal: React.FC<Props> = ({ show, setShow, customerId }) => {
+const UpdateModal: React.FC<Props> = ({
+  show,
+  setShow,
+  customerId,
+  setShowFeedback,
+  setFeedbackData,
+  setCustomers
+}) => {
   const [formValues, setFormValues] = useState<FormData | null>(null);
 
   function handleClose(): void {
@@ -53,11 +96,26 @@ const UpdateModal: React.FC<Props> = ({ show, setShow, customerId }) => {
     email_address: formValues?.email_address,
     cpf: formValues?.cpf,
     phone_number: formValues?.phone_number,
-    street_address: formValues?.Addresses[0].street_address,
-    city: formValues?.Addresses[0].city,
-    zip: formValues?.Addresses[0].zip,
-    country: formValues?.Addresses[0].country,
-    state: formValues?.Addresses[0].state,
+    street_address:
+      formValues?.Addresses.length !== 0
+        ? `${formValues?.Addresses[0].street_address}`
+        : "",
+    city:
+      formValues?.Addresses.length !== 0
+        ? `${formValues?.Addresses[0].city}`
+        : "",
+    zip:
+      formValues?.Addresses.length !== 0
+        ? `${formValues?.Addresses[0].zip}`
+        : "",
+    country:
+      formValues?.Addresses.length !== 0
+        ? `${formValues?.Addresses[0].country}`
+        : "",
+    state:
+      formValues?.Addresses.length !== 0
+        ? `${formValues?.Addresses[0].state}`
+        : "",
     password: "",
     confirmPassword: ""
   };
@@ -80,7 +138,14 @@ const UpdateModal: React.FC<Props> = ({ show, setShow, customerId }) => {
             handleCloseModal={handleClose}
             customerId={customerId}
             initialValues={initialValues}
-            addressesId={formValues.Addresses[0].id}
+            setCustomers={setCustomers}
+            addressesId={
+              formValues.Addresses.length !== 0
+                ? formValues.Addresses[0].id
+                : customerId
+            }
+            setFeedbackData={setFeedbackData}
+            setShowFeedback={setShowFeedback}
           />
         </Modal.Body>
       </Modal>

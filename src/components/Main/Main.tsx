@@ -1,6 +1,6 @@
 import React from "react";
 import "../../styles/css/Main.css";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 
 interface Props {
   children: JSX.Element | null;
@@ -8,10 +8,8 @@ interface Props {
 
 const Main: React.FC<Props> = ({ children }) => {
   return (
-    <Container fluid className=" mt-1">
-      <Row className="justify-content-md-center ">
-        <Col sm={12}>{children}</Col>
-      </Row>
+    <Container fluid className=" mt-1" id="MainContainer">
+      {children}
     </Container>
   );
 };

@@ -19,11 +19,47 @@ interface FormValues {
   confirmPassword: string | undefined;
 }
 
+interface Addresses {
+  street_address: string;
+  city: string;
+  zip: string;
+  country: string;
+  state: string;
+}
+
+interface TableData {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email_address: string;
+  cpf: string;
+  phone_number: string;
+  createdAt: string;
+  Addresses: Addresses[];
+}
+
+interface alertValues {
+  variant:
+    | "danger"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "info"
+    | "dark"
+    | "light"
+    | undefined;
+  message: string;
+}
+
 interface Props {
   initialValues: FormValues;
   customerId: number | null;
   addressesId: number | null;
   handleCloseModal: () => void;
+  setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
+  setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
+  setCustomers: React.Dispatch<React.SetStateAction<TableData[]>>;
 }
 
 const schema = yup.object({
@@ -109,7 +145,10 @@ const UpdateForm: React.FC<Props> = ({
   initialValues,
   customerId,
   addressesId,
-  handleCloseModal
+  handleCloseModal,
+  setFeedbackData,
+  setShowFeedback,
+  setCustomers
 }) => {
   return (
     <Formik
@@ -117,19 +156,35 @@ const UpdateForm: React.FC<Props> = ({
       validationSchema={schema}
       onSubmit={async (values: FormValues, { setSubmitting, resetForm }) => {
         try {
-          const response = await api.put(
-            `/api/customer/${customerId}/addresses/${addressesId}/edit`,
-            values
-          );
+          await api
+            .put(
+              `/api/customer/${customerId}/addresses/${addressesId}/edit`,
+              values
+            )
+            .then(res => {
+              setFeedbackData({
+                message: "The customer data has been updated successfully.",
+                variant: "success"
+              });
+              setShowFeedback(true);
+              resetForm({});
+              setSubmitting(false);
+              handleCloseModal();
+              async function loadCustomers() {
+                const { data } = await api.get("/api/customer");
 
-          resetForm({});
-          if (response) {
-            console.log(response);
-            handleCloseModal();
-          }
+                setCustomers(data);
+              }
+              loadCustomers();
+            });
         } catch (err) {
           setSubmitting(false);
-          console.log(err);
+          handleCloseModal();
+          setFeedbackData({
+            message: "It was not possible to update customer data.",
+            variant: "warning"
+          });
+          setShowFeedback(true);
         }
       }}
     >
@@ -375,7 +430,7 @@ const UpdateForm: React.FC<Props> = ({
             <Form.Group controlId="submit" as={Col}>
               <InputGroup>
                 {isSubmitting ? (
-                  <Button variant="secondary" size="lg" disabled block>
+                  <Button variant="primary" size="lg" disabled block>
                     <Spinner
                       as="span"
                       animation="grow"

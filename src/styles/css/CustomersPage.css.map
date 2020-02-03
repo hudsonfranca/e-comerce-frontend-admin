@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,aAAa,CAAC;EACZ,UAAU,EAAE,IAAI;CACjB",
+    "sources": [
+        "../../Views/Customers/CustomersPage.scss"
+    ],
+    "names": [],
+    "file": "CustomersPage.css"
+}

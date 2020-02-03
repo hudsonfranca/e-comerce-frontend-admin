@@ -12,8 +12,6 @@ interface Addresses {
   state: string;
 }
 
-type Addre = Addresses[];
-
 interface TableData {
   id: number;
   first_name: string;
@@ -22,14 +20,36 @@ interface TableData {
   cpf: string;
   phone_number: string;
   createdAt: string;
-  Addresses: Addre;
+  Addresses: Addresses[];
+}
+
+interface alertValues {
+  variant:
+    | "danger"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "info"
+    | "dark"
+    | "light"
+    | undefined;
+  message: string;
 }
 
 interface Props {
   values: TableData[] | null;
+  setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
+  setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
+  setCustomers: React.Dispatch<React.SetStateAction<TableData[]>>;
 }
 
-const CustomerTable: React.FC<Props> = ({ values }) => {
+const CustomerTable: React.FC<Props> = ({
+  values,
+  setFeedbackData,
+  setShowFeedback,
+  setCustomers
+}) => {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [updateId, setUpdateId] = useState<number | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -51,11 +71,17 @@ const CustomerTable: React.FC<Props> = ({ values }) => {
         deleteId={deleteId}
         show={showDeleteModal}
         setShow={setShowDeleteModal}
+        setFeedbackData={setFeedbackData}
+        setShowFeedback={setShowFeedback}
+        setCustomers={setCustomers}
       />
       <UpdateModal
         customerId={updateId}
         show={showUpdateModal}
         setShow={setShowUpdateModal}
+        setFeedbackData={setFeedbackData}
+        setShowFeedback={setShowFeedback}
+        setCustomers={setCustomers}
       />
 
       <Table striped bordered responsive="sm" size="sm">
@@ -66,8 +92,8 @@ const CustomerTable: React.FC<Props> = ({ values }) => {
             <th scope="col">Email</th>
             <th scope="col">CPF</th>
             <th scope="col">Phone</th>
-            <th scope="col">Addresses</th>
-            <th scope="col">Date</th>
+            <th scope="col">Location</th>
+            <th scope="col">Registration date</th>
             <th scope="col">Edit</th>
             <th scope="col">Delete</th>
           </tr>
@@ -81,7 +107,11 @@ const CustomerTable: React.FC<Props> = ({ values }) => {
                 <td>{data.email_address}</td>
                 <td>{data.cpf}</td>
                 <td>{data.phone_number}</td>
-                <td>{`${data.Addresses[0].street_address}, ${data.Addresses[0].city}, ${data.Addresses[0].state}`}</td>
+                <td>
+                  {data.Addresses.length !== 0
+                    ? `${data.Addresses[0].street_address}, ${data.Addresses[0].city}, ${data.Addresses[0].state}`
+                    : ""}
+                </td>
                 <td>{moment(data.createdAt).format("DD/MM/YYYY")}</td>
                 <td>
                   <p>

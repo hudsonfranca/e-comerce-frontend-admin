@@ -1,9 +1,44 @@
 import React, { useEffect, useState } from "react";
 import api from "../../services/Api";
-import { Table, Pagination, Searchinput } from "./components";
+import { Table, Pagination, Searchinput, AlertFeedback } from "./components";
+import { Row, Col } from "react-bootstrap";
+import "../../styles/css/CustomersPage.css";
 
-export default function Customers() {
-  const [customers, setCustomers] = useState([]);
+interface alertValues {
+  variant:
+    | "danger"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "info"
+    | "dark"
+    | "light"
+    | undefined;
+  message: string;
+}
+
+interface Addresses {
+  street_address: string;
+  city: string;
+  zip: string;
+  country: string;
+  state: string;
+}
+
+interface TableData {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email_address: string;
+  cpf: string;
+  phone_number: string;
+  createdAt: string;
+  Addresses: Addresses[];
+}
+
+export const Customers: React.FC = () => {
+  const [customers, setCustomers] = useState<TableData[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [customersPerPage] = useState<number>(10);
 
@@ -37,16 +72,56 @@ export default function Customers() {
     setCustomers(response.data);
   }
 
+  const [showFeedback, setShowFeedback] = useState(false);
+
+  const [feedbackData, setFeedbackData] = useState<alertValues>({
+    message: "",
+    variant: "success"
+  });
+
   return (
     <>
-      <Searchinput onSubmit={handleSubmit} />
-      <Table values={currenCustomers} />
-      <Pagination
-        customersPerPage={customersPerPage}
-        totalCustomers={customers.length}
-        paginate={paginate}
-        currentPage={currentPage}
-      />
+      <Row>
+        <Col sm={12}>
+          <AlertFeedback
+            variant={feedbackData.variant}
+            setShow={setShowFeedback}
+            show={showFeedback}
+          >
+            {feedbackData.message}
+          </AlertFeedback>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col sm={12}>
+          <Searchinput onSubmit={handleSubmit} />
+        </Col>
+      </Row>
+
+      <Row className="rowMinHeight">
+        <Col sm={12}>
+          <Table
+            values={currenCustomers}
+            setFeedbackData={setFeedbackData}
+            setShowFeedback={setShowFeedback}
+            setCustomers={setCustomers}
+          />
+        </Col>
+      </Row>
+
+      <Row>
+        <Col sm={12}>
+          <Pagination
+            customersPerPage={customersPerPage}
+            totalCustomers={customers.length}
+            paginate={paginate}
+            currentPage={currentPage}
+          />
+        </Col>
+      </Row>
     </>
   );
-}
+};
+
+export default Customers;
