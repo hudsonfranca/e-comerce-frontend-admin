@@ -1,0 +1,21 @@
+#images {
+  margin-bottom: 20px;
+  border: 1px solid dashed #ddd;
+  background-size: cover;
+  cursor: pointer;
+  height: 160px;
+  display: flex;
+  justify-content: center;
+
+  &.has-images #inputFile {
+    border: 0;
+  }
+
+  &.has-images img {
+    display: none;
+  }
+
+  #inputFile {
+    display: none;
+  }
+}
