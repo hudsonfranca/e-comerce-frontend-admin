@@ -5,8 +5,9 @@ import { Customers, Products } from "./Views";
 const Routes: React.FC = () => {
   return (
     <Switch>
-      {/* <Route to="/customers" exact component={Customers} /> */}
-      <Route to="/Products" exact component={Products} />
+      <Route to="/" exact component={Customers} />
+      <Route to="/customers" component={Customers} />
+      <Route to="/Products" component={Products} />
     </Switch>
   );
 };

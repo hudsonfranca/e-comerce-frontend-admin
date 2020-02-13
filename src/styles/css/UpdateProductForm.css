@@ -1,0 +1,26 @@
+#images {
+  margin-bottom: 20px;
+  border: 1px solid dashed #ddd;
+  background-size: cover;
+  cursor: pointer;
+  height: 160px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+#images.has-images #inputFile {
+  border: 0;
+}
+
+#images.has-images img {
+  display: none;
+}
+
+#images #inputFile {
+  display: none;
+}
+/*# sourceMappingURL=UpdateProductForm.css.map */

@@ -21,7 +21,7 @@ const SearchAddBar: React.FC<Props> = ({ onSubmit, showAddModal }) => {
           }
           value={inputValue}
           type="text"
-          placeholder="Search"
+          placeholder="Id..."
           className=" mr-sm-2"
         />
         <Button type="submit">Search</Button>

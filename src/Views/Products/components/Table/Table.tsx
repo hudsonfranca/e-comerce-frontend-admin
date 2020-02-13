@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import moment from "moment";
+
 import DeleteModal from "../DeleteModal";
-import UpdateModal from "../UpdateModal";
+import UpdateProductModal from "../UpdateProductModal";
+import CarouselModal from "../CarouselModal";
 import { Table, Badge, Button } from "react-bootstrap";
 
 interface TableData {
@@ -35,7 +36,7 @@ interface Props {
   setProducts: React.Dispatch<React.SetStateAction<TableData[]>>;
 }
 
-const CustomerTable: React.FC<Props> = ({
+const ProductsTable: React.FC<Props> = ({
   values,
   setFeedbackData,
   setShowFeedback,
@@ -45,6 +46,8 @@ const CustomerTable: React.FC<Props> = ({
   const [updateId, setUpdateId] = useState<number | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showCarouselModal, setShowCarouselModal] = useState(false);
+  const [productId, setProductId] = useState<number | null>(null);
 
   function hadleDelete(id: number) {
     setDeleteId(id);
@@ -56,8 +59,19 @@ const CustomerTable: React.FC<Props> = ({
     setShowUpdateModal(true);
   }
 
+  function hadleImageButtonClick(id: number) {
+    setProductId(id);
+    setShowCarouselModal(true);
+  }
+
   return (
     <>
+      <CarouselModal
+        productId={productId}
+        setShow={setShowCarouselModal}
+        show={showCarouselModal}
+      />
+
       <DeleteModal
         deleteId={deleteId}
         show={showDeleteModal}
@@ -66,14 +80,14 @@ const CustomerTable: React.FC<Props> = ({
         setShowFeedback={setShowFeedback}
         setProducts={setProducts}
       />
-      {/* <UpdateModal
+      <UpdateProductModal
         updateId={updateId}
         show={showUpdateModal}
         setShow={setShowUpdateModal}
         setFeedbackData={setFeedbackData}
         setShowFeedback={setShowFeedback}
         setProducts={setProducts}
-      /> */}
+      />
 
       <Table
         striped
@@ -127,7 +141,10 @@ const CustomerTable: React.FC<Props> = ({
                 </td>
                 <td>
                   <p>
-                    <Button variant="warning">
+                    <Button
+                      variant="warning"
+                      onClick={() => hadleImageButtonClick(data.id)}
+                    >
                       <i
                         className="fas fa-images"
                         style={{ color: "white" }}
@@ -153,4 +170,4 @@ const CustomerTable: React.FC<Props> = ({
   );
 };
 
-export default CustomerTable;
+export default ProductsTable;

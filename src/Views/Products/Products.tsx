@@ -7,7 +7,7 @@ import {
   AlertFeedback,
   AddProductModal
 } from "./components";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import "../../styles/css/ProductsPage.css";
 
 interface alertValues {
@@ -42,11 +42,30 @@ export const Products: React.FC = () => {
   useEffect(() => {
     async function loadproducts() {
       const { data } = await api.get("/api/products");
-
+      console.log("DATA ", data);
       setProducts(data);
     }
     loadproducts();
   }, []);
+
+  async function handleSubmit(
+    event: React.FormEvent<HTMLFormElement>,
+    data: any
+  ) {
+    event.preventDefault();
+    const arr = [];
+    const response = await api.get(`/api/products/${data}`);
+    arr.push(response.data);
+
+    setProducts(arr);
+  }
+
+  const [showFeedback, setShowFeedback] = useState(false);
+
+  const [feedbackData, setFeedbackData] = useState<alertValues>({
+    message: "",
+    variant: "success"
+  });
 
   // Get current posts
 
@@ -60,27 +79,8 @@ export const Products: React.FC = () => {
   //Change page
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  async function handleSubmit(
-    event: React.FormEvent<HTMLFormElement>,
-    data: any
-  ) {
-    event.preventDefault();
-    const response = await api.get(
-      `http://localhost:3333/api/products/search?name=${data}`
-    );
-
-    setProducts(response.data);
-  }
-
-  const [showFeedback, setShowFeedback] = useState(false);
-
-  const [feedbackData, setFeedbackData] = useState<alertValues>({
-    message: "",
-    variant: "success"
-  });
-
   const [ShowAddProdModal, setShowAddProdModal] = useState(false);
-
+  console.log(products);
   return (
     <>
       <AddProductModal
@@ -110,16 +110,6 @@ export const Products: React.FC = () => {
           />
         </Col>
       </Row>
-
-      {/* <Row>
-        <Col>
-          <div className="d-flex flex-row-reverse bd-highlight bg-light p-4">
-            <Button variant="primary" onClick={() => setShowAddProdModal(true)}>
-              ADD Product
-            </Button>
-          </div>
-        </Col>
-      </Row> */}
 
       <Row className="rowMinHeight">
         <Col sm={12}>

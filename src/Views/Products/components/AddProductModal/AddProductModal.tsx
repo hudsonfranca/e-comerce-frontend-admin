@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Modal, Button } from "react-bootstrap";
+import React from "react";
+import { Modal } from "react-bootstrap";
 import AddProductForm from "../AddProductForm";
 
 interface FormValues {
@@ -62,7 +62,7 @@ export const AddProductModal: React.FC<Props> = ({
       aria-labelledby="example-modal-sizes-title-lg"
     >
       <Modal.Header closeButton>
-        <Modal.Title id="example-modal-sizes-title-lg">Large Modal</Modal.Title>
+        <Modal.Title id="example-modal-sizes-title-lg">Add Product</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <AddProductForm

@@ -1,6 +1,7 @@
 import React from "react";
 import "../../styles/css/Navbar.css";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 interface Props {}
 
@@ -14,12 +15,17 @@ const CustoNavbar: React.FC<Props> = () => {
         variant="dark"
         fixed="top"
       >
-        <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+        <Navbar.Brand href="#home">ADMIN</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="mr-auto">
-            <Nav.Link href="#features">Features</Nav.Link>
-            <Nav.Link href="#pricing">Pricing</Nav.Link>
+            <Link to="/customers">
+              <Nav.Link href="#features">Customers</Nav.Link>
+            </Link>
+            <Link to="/Products">
+              <Nav.Link href="#pricing">Products</Nav.Link>
+            </Link>
+
             <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
