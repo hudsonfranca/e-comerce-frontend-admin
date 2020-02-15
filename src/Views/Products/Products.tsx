@@ -42,7 +42,7 @@ export const Products: React.FC = () => {
   useEffect(() => {
     async function loadproducts() {
       const { data } = await api.get("/api/products");
-      console.log("DATA ", data);
+
       setProducts(data);
     }
     loadproducts();
@@ -80,7 +80,7 @@ export const Products: React.FC = () => {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const [ShowAddProdModal, setShowAddProdModal] = useState(false);
-  console.log(products);
+
   return (
     <>
       <AddProductModal

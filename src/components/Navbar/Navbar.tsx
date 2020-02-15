@@ -15,15 +15,20 @@ const CustoNavbar: React.FC<Props> = () => {
         variant="dark"
         fixed="top"
       >
-        <Navbar.Brand href="#home">ADMIN</Navbar.Brand>
+        <Navbar.Brand href="#home">
+          <i className="fas fa-users-cog"></i> ADMIN
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="mr-auto">
-            <Link to="/customers">
-              <Nav.Link href="#features">Customers</Nav.Link>
+            <Link to="/customers" className="nav-link">
+              Customers
             </Link>
-            <Link to="/Products">
-              <Nav.Link href="#pricing">Products</Nav.Link>
+            <Link to="/products" className="nav-link">
+              Products
+            </Link>
+            <Link to="/" className="nav-link">
+              Orders
             </Link>
 
             <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
@@ -39,9 +44,8 @@ const CustoNavbar: React.FC<Props> = () => {
             </NavDropdown>
           </Nav>
           <Nav>
-            <Nav.Link href="#deets">More deets</Nav.Link>
-            <Nav.Link eventKey={2} href="#memes">
-              Dank memes
+            <Nav.Link href="#deets">
+              <i className="fas fa-sign-out-alt"></i> Logout
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>

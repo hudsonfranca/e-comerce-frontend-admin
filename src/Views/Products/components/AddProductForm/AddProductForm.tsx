@@ -11,12 +11,10 @@ const schema = yup.object({
   name: yup
     .string()
     .required()
-    .max(50)
     .label("Name"),
   description: yup
     .string()
     .required()
-    .max(2000)
     .label("Description"),
   price: yup
     .string()
