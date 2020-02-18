@@ -11,15 +11,14 @@ const schema = yup.object({
   name: yup
     .string()
     .required()
-    .max(50)
     .label("Name"),
   description: yup
     .string()
     .required()
-    .max(2000)
     .label("Description"),
   price: yup
-    .string()
+    .number()
+    .typeError("Price must be a number")
     .required()
     .label("Price"),
   status: yup
@@ -35,17 +34,6 @@ const schema = yup.object({
     .required()
     .label("Categorie")
 });
-
-interface FormValues {
-  id: number | undefined;
-  name: string | undefined;
-  description: string | undefined;
-  price: string | undefined;
-  status: string | undefined;
-  Brand: { id: string; name: string } | undefined;
-  Categories: { id: number; name: string }[] | undefined;
-  Images: { url: string }[] | undefined;
-}
 
 interface TableData {
   id: number;
@@ -121,12 +109,10 @@ export const AddProductForm: React.FC<Props> = ({
         console.log(values);
         try {
           setSubmitting(true);
-          const { data } = await api
-            .put(`/api/products/${updateId}/edit`, values)
-            .then(res => {
-              console.log("id do Produto", res);
-              return res;
-            });
+          const { data } = await api.put(
+            `/api/products/${updateId}/edit`,
+            values
+          );
 
           let uploadImagesPromisses: any = [];
 

@@ -17,7 +17,8 @@ const schema = yup.object({
     .required()
     .label("Description"),
   price: yup
-    .string()
+    .number()
+    .typeError("Price must be a number")
     .required()
     .label("Price"),
   status: yup
@@ -25,7 +26,7 @@ const schema = yup.object({
     .required()
     .label("Status"),
   brand_id: yup
-    .string()
+    .number()
     .required()
     .label("Brand"),
   categorie: yup

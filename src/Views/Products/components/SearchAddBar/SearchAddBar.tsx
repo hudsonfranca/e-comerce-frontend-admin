@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { Form, FormControl, Button } from "react-bootstrap";
+import { Formik } from "formik";
+import * as yup from "yup";
+import api from "../../../../services/Api";
+
 interface Props {
   onSubmit: (event: React.FormEvent<HTMLFormElement>, data: any) => void;
   showAddModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -11,9 +15,12 @@ const SearchAddBar: React.FC<Props> = ({ onSubmit, showAddModal }) => {
     <nav className="navbar navbar-light bg-light p-4">
       <Form
         inline
-        onSubmit={(e: React.FormEvent<HTMLFormElement>) =>
-          onSubmit(e, inputValue)
-        }
+        onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+          e.preventDefault();
+          if (inputValue) {
+            onSubmit(e, inputValue);
+          }
+        }}
       >
         <FormControl
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

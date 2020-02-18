@@ -85,7 +85,7 @@ const ViewModal: React.FC<Props> = ({ show, setShow, values }) => {
           </thead>
           <tbody>
             {values?.Sale.Products.map(product => (
-              <tr>
+              <tr key={product.id}>
                 <td>{product.id}</td>
                 <td>{product.name}</td>
               </tr>

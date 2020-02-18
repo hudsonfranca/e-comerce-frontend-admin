@@ -77,27 +77,31 @@ const SearchInput: React.FC<Props> = ({
 
   useEffect(() => {
     async function loadOrders() {
-      const { data } = await api.get(`/api/orders`);
-      setAllOrdersCount(data.count);
+      try {
+        const { data } = await api.get(`/api/orders/index`);
+        setAllOrdersCount(data.count);
 
-      const completed = await api.get(`/api/orders/status/Completed`);
-      setCompletedCount(completed.data.count);
+        const completed = await api.get(`/api/orders/status/Completed`);
+        setCompletedCount(completed.data.count);
 
-      const Onhold = await api.get(`/api/orders/status/On hold`);
-      setOnHoldCount(Onhold.data.count);
+        const Onhold = await api.get(`/api/orders/status/On hold`);
+        setOnHoldCount(Onhold.data.count);
 
-      const payment = await api.get(`/api/orders/status/Pending payment`);
-      setPendingPaymentCount(payment.data.count);
+        const payment = await api.get(`/api/orders/status/Pending payment`);
+        setPendingPaymentCount(payment.data.count);
 
-      const processing = await api.get(`/api/orders/status/Processing`);
-      setProcessingCount(processing.data.count);
+        const processing = await api.get(`/api/orders/status/Processing`);
+        setProcessingCount(processing.data.count);
+      } catch (err) {
+        console.log(err);
+      }
     }
     loadOrders();
   }, [orders]);
 
   const handleChangeStatus = async (status: statusType) => {
     if (status === "All") {
-      const { data } = await api.get("/api/orders");
+      const { data } = await api.get("/api/orders/index");
 
       setOrders(data.rows);
     } else {
@@ -108,20 +112,19 @@ const SearchInput: React.FC<Props> = ({
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const orderArr = [];
-    try {
-      const { data } = await api.get(`/api/orders/${inputValue}`);
-
-      orderArr.push(data);
-      if (data) {
-        setOrders(orderArr);
+    if (!!parseInt(inputValue)) {
+      const orderArr = [];
+      try {
+        const { data } = await api.get(`/api/orders/${inputValue}/show`);
+        if (data) {
+          orderArr.push(data);
+          setOrders(orderArr);
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
     }
   }
-
-  const [currentStatus, setCurrentStatus] = useState<statusType>("All");
 
   return (
     <nav className="navbar navbar-light bg-light ">

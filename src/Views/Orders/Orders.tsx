@@ -56,7 +56,7 @@ export const Orders: React.FC = () => {
 
   useEffect(() => {
     async function loadOrders() {
-      const { data } = await api.get("/api/orders");
+      const { data } = await api.get("/api/orders/index");
 
       setOrders(data.rows);
     }

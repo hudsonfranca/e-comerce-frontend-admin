@@ -78,7 +78,7 @@ const CustomerTable: React.FC<Props> = ({
   setOrders
 }) => {
   async function loadOrders() {
-    const { data } = await api.get("/api/orders");
+    const { data } = await api.get("/api/orders/index");
     setOrders(data.rows);
   }
 
@@ -114,7 +114,7 @@ const CustomerTable: React.FC<Props> = ({
   const [viewOrders, setViewOrders] = useState<TableData | null>(null);
 
   async function loadViewOrders(orderId: number) {
-    const { data } = await api.get(`/api/orders/${orderId}`);
+    const { data } = await api.get(`/api/orders/${orderId}/show`);
     setViewOrders(data);
   }
 

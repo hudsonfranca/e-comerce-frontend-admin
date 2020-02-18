@@ -58,7 +58,7 @@ interface Props {
   setProducts: React.Dispatch<React.SetStateAction<TableData[]>>;
 }
 
-export const AddProductModal: React.FC<Props> = ({
+export const UpdateProductModal: React.FC<Props> = ({
   show,
   setShow,
   updateId,
@@ -119,4 +119,4 @@ export const AddProductModal: React.FC<Props> = ({
   );
 };
 
-export default AddProductModal;
+export default UpdateProductModal;

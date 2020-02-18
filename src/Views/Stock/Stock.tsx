@@ -8,7 +8,7 @@ import {
   AddProductModal
 } from "./components";
 import { Row, Col } from "react-bootstrap";
-import "../../styles/css/ProductsPage.css";
+import "../../styles/css/stockPage.css";
 
 interface alertValues {
   variant:
@@ -26,41 +26,26 @@ interface alertValues {
 
 interface TableData {
   id: number;
-  name: string;
-  description: string;
-  price: string;
-  status: boolean;
-  Images: { url: string }[];
-  Brand: { id: number; name: string };
+  quantity: number;
+  id_product: number;
+  Products: {
+    name: string;
+  };
 }
 
-export const Products: React.FC = () => {
-  const [products, setProducts] = useState<TableData[]>([]);
+export const Stock: React.FC = () => {
+  const [stock, setStock] = useState<TableData[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [productsPerPage] = useState<number>(10);
+  const [stockPerPage] = useState<number>(10);
 
   useEffect(() => {
-    async function loadproducts() {
-      const { data } = await api.get("/api/products");
+    async function loadStock() {
+      const { data } = await api.get("/api/stock");
 
-      setProducts(data);
+      setStock(data);
     }
-    loadproducts();
+    loadStock();
   }, []);
-
-  async function handleSubmit(
-    event: React.FormEvent<HTMLFormElement>,
-    data: any
-  ) {
-    event.preventDefault();
-    const arr = [];
-    const response = await api.get(`/api/products/${data}`);
-    if (response.data) {
-      arr.push(response.data);
-
-      setProducts(arr);
-    }
-  }
 
   const [showFeedback, setShowFeedback] = useState(false);
 
@@ -71,12 +56,9 @@ export const Products: React.FC = () => {
 
   // Get current posts
 
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currenProducts = products.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
+  const indexOfLastProduct = currentPage * stockPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - stockPerPage;
+  const currenstock = stock.slice(indexOfFirstProduct, indexOfLastProduct);
 
   //Change page
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -88,7 +70,7 @@ export const Products: React.FC = () => {
       <AddProductModal
         show={ShowAddProdModal}
         setFeedbackData={setFeedbackData}
-        setProducts={setProducts}
+        setStock={setStock}
         setShow={setShowAddProdModal}
         setShowFeedback={setShowFeedback}
       />
@@ -107,7 +89,7 @@ export const Products: React.FC = () => {
       <Row>
         <Col sm={12}>
           <SearchAddBar
-            onSubmit={handleSubmit}
+            setStock={setStock}
             showAddModal={setShowAddProdModal}
           />
         </Col>
@@ -116,10 +98,10 @@ export const Products: React.FC = () => {
       <Row className="rowMinHeight">
         <Col sm={12}>
           <Table
-            values={currenProducts}
+            values={currenstock}
             setFeedbackData={setFeedbackData}
             setShowFeedback={setShowFeedback}
-            setProducts={setProducts}
+            setStock={setStock}
           />
         </Col>
       </Row>
@@ -127,8 +109,8 @@ export const Products: React.FC = () => {
       <Row>
         <Col sm={12}>
           <Pagination
-            productsPerPage={productsPerPage}
-            totalproducts={products.length}
+            stockPerPage={stockPerPage}
+            totalStock={stock.length}
             paginate={paginate}
             currentPage={currentPage}
           />
@@ -138,4 +120,4 @@ export const Products: React.FC = () => {
   );
 };
 
-export default Products;
+export default Stock;

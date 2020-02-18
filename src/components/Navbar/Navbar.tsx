@@ -30,7 +30,9 @@ const CustoNavbar: React.FC<Props> = () => {
             <Link to="/" className="nav-link">
               Orders
             </Link>
-
+            <Link to="/stock" className="nav-link">
+              Stock
+            </Link>
             <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
