@@ -20,6 +20,7 @@ interface FormValues {
 }
 
 interface Addresses {
+  id: number;
   street_address: string;
   city: string;
   zip: string;
@@ -29,13 +30,15 @@ interface Addresses {
 
 interface TableData {
   id: number;
-  first_name: string;
-  last_name: string;
-  email_address: string;
-  cpf: string;
-  phone_number: string;
-  createdAt: string;
-  Addresses: Addresses[];
+  User: {
+    first_name: string;
+    last_name: string;
+    email_address: string;
+    cpf: string;
+    phone_number: string;
+    createdAt: string;
+    Addresses: Addresses;
+  };
 }
 
 interface alertValues {
@@ -55,11 +58,10 @@ interface alertValues {
 interface Props {
   initialValues: FormValues;
   customerId: number | null;
-  addressesId: number | null;
   handleCloseModal: () => void;
   setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
   setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
-  setCustomers: React.Dispatch<React.SetStateAction<TableData[]>>;
+  loadCustomers: () => void;
 }
 
 const schema = yup.object({
@@ -144,11 +146,10 @@ const schema = yup.object({
 const UpdateForm: React.FC<Props> = ({
   initialValues,
   customerId,
-  addressesId,
   handleCloseModal,
   setFeedbackData,
   setShowFeedback,
-  setCustomers
+  loadCustomers
 }) => {
   return (
     <Formik
@@ -157,10 +158,7 @@ const UpdateForm: React.FC<Props> = ({
       onSubmit={async (values: FormValues, { setSubmitting, resetForm }) => {
         try {
           await api
-            .put(
-              `/api/customer/${customerId}/addresses/${addressesId}/edit`,
-              values
-            )
+            .put(`/api/customer/${customerId}/edit`, values)
             .then(res => {
               setFeedbackData({
                 message: "The customer data has been updated successfully.",
@@ -170,11 +168,7 @@ const UpdateForm: React.FC<Props> = ({
               resetForm({});
               setSubmitting(false);
               handleCloseModal();
-              async function loadCustomers() {
-                const { data } = await api.get("/api/customer");
-
-                setCustomers(data);
-              }
+              loadCustomers();
               loadCustomers();
             });
         } catch (err) {

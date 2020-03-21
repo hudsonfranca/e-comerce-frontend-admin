@@ -14,31 +14,43 @@ import {
 
 interface TableData {
   id: number;
+  id_customers: number;
+  id_payment_methods: number;
   status: "Completed" | "On hold" | "Pending payment" | "Processing";
-  Sale: {
+  amount: string;
+  created_at: string;
+  Products: {
     id: number;
-    id_customers: number;
-    id_payment_methods: number;
-    amount: string;
-    created_at: string;
-    Products: {
-      id: string;
-      name: string;
-      brand_id: number;
-      description: string;
+    name: string;
+    price: string;
+    description: string;
+    status: boolean;
+    Images: {
+      image: string;
+      small: string;
+      id: number;
+      id_product: number;
+      aspect_ratio: string;
     }[];
-    Customers: {
+    orders_products: {
+      quantity: number;
+    };
+  }[];
+  OrdersAddresse: {
+    id: number;
+    street_address: string;
+    city: string;
+    zip: string;
+    country: string;
+    state: string;
+  };
+  Customers: {
+    id: number;
+    User: {
+      id: number;
       first_name: string;
       last_name: string;
       email_address: string;
-      Addresses: {
-        id: number;
-        street_address: string;
-        city: string;
-        zip: string;
-        country: string;
-        state: string;
-      }[];
     };
   };
 }
@@ -62,6 +74,7 @@ interface Props {
   setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
   setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
   setOrders: React.Dispatch<React.SetStateAction<TableData[]>>;
+  loadOrders: () => void;
 }
 
 type statusType =
@@ -75,17 +88,13 @@ const CustomerTable: React.FC<Props> = ({
   values,
   setFeedbackData,
   setShowFeedback,
-  setOrders
+  setOrders,
+  loadOrders
 }) => {
-  async function loadOrders() {
-    const { data } = await api.get("/api/orders/index");
-    setOrders(data.rows);
-  }
-
   const handleChangeStatus = async (status: statusType, idOrder: number) => {
     if (status === "Delete") {
       try {
-        await api.delete(`/api/order/${idOrder}/delete`);
+        await api.delete(`/api/orders/${idOrder}`);
         loadOrders();
       } catch (err) {
         setFeedbackData({
@@ -139,10 +148,10 @@ const CustomerTable: React.FC<Props> = ({
         </thead>
         <tbody>
           {values &&
-            values.map(data => (
+            values.map((data: TableData) => (
               <tr key={data.id}>
-                <th scope="row">{`#${data.id} ${data.Sale.Customers.first_name} ${data.Sale.Customers.last_name}`}</th>
-                <td>{moment(data.Sale.created_at).format("DD/MM/YYYY")}</td>
+                <th scope="row">{`#${data.id} ${data.Customers.User.first_name} ${data.Customers.User.last_name}`}</th>
+                <td>{moment(data.created_at).format("DD/MM/YYYY")}</td>
                 <td>
                   {data.status === "Completed" ? (
                     <Badge variant="success">
@@ -175,8 +184,8 @@ const CustomerTable: React.FC<Props> = ({
                     ""
                   )}
                 </td>
-                <td>{`${data.Sale.Customers.Addresses[0].street_address}, ${data.Sale.Customers.Addresses[0].city}, ${data.Sale.Customers.Addresses[0].state}, ${data.Sale.Customers.Addresses[0].country}`}</td>
-                <td>{data.Sale.amount}</td>
+                <td>{`${data.OrdersAddresse.street_address}, ${data.OrdersAddresse.city}, ${data.OrdersAddresse.state}, ${data.OrdersAddresse.state}`}</td>
+                <td>${data.amount}</td>
                 <td>
                   <ButtonGroup style={{ width: "100%" }}>
                     <DropdownButton

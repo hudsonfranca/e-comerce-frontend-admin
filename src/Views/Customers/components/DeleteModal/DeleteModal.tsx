@@ -17,6 +17,7 @@ interface alertValues {
 }
 
 interface Addresses {
+  id: number;
   street_address: string;
   city: string;
   zip: string;
@@ -26,13 +27,15 @@ interface Addresses {
 
 interface TableData {
   id: number;
-  first_name: string;
-  last_name: string;
-  email_address: string;
-  cpf: string;
-  phone_number: string;
-  createdAt: string;
-  Addresses: Addresses[];
+  User: {
+    first_name: string;
+    last_name: string;
+    email_address: string;
+    cpf: string;
+    phone_number: string;
+    createdAt: string;
+    Addresses: Addresses;
+  };
 }
 
 interface Props {
@@ -41,7 +44,8 @@ interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
   setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
-  setCustomers: React.Dispatch<React.SetStateAction<TableData[]>>;
+
+  loadCustomers: () => void;
 }
 
 const DeleteModal: React.FC<Props> = ({
@@ -50,7 +54,7 @@ const DeleteModal: React.FC<Props> = ({
   deleteId,
   setFeedbackData,
   setShowFeedback,
-  setCustomers
+  loadCustomers
 }) => {
   const handleClose = () => setShow(false);
 
@@ -67,11 +71,6 @@ const DeleteModal: React.FC<Props> = ({
           handleClose();
         })
         .then(() => {
-          async function loadCustomers() {
-            const { data } = await api.get("/api/customer");
-
-            setCustomers(data);
-          }
           loadCustomers();
         });
     } catch (err) {

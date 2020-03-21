@@ -18,6 +18,7 @@ interface alertValues {
 }
 
 interface Addresses {
+  id: number;
   street_address: string;
   city: string;
   zip: string;
@@ -27,13 +28,15 @@ interface Addresses {
 
 interface TableData {
   id: number;
-  first_name: string;
-  last_name: string;
-  email_address: string;
-  cpf: string;
-  phone_number: string;
-  createdAt: string;
-  Addresses: Addresses[];
+  User: {
+    first_name: string;
+    last_name: string;
+    email_address: string;
+    cpf: string;
+    phone_number: string;
+    createdAt: string;
+    Addresses: Addresses;
+  };
 }
 
 interface Props {
@@ -42,27 +45,8 @@ interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
   setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
-  setCustomers: React.Dispatch<React.SetStateAction<TableData[]>>;
-}
 
-interface AddressesFormData {
-  id: number;
-  street_address: string;
-  city: string;
-  zip: string;
-  country: string;
-  state: string;
-}
-
-interface FormData {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email_address: string;
-  cpf: string;
-  phone_number: string;
-  createdAt: string;
-  Addresses: AddressesFormData[];
+  loadCustomers: () => void;
 }
 
 const UpdateModal: React.FC<Props> = ({
@@ -71,9 +55,9 @@ const UpdateModal: React.FC<Props> = ({
   customerId,
   setShowFeedback,
   setFeedbackData,
-  setCustomers
+  loadCustomers
 }) => {
-  const [formValues, setFormValues] = useState<FormData | null>(null);
+  const [formValues, setFormValues] = useState<TableData | null>(null);
 
   function handleClose(): void {
     setShow(false);
@@ -81,41 +65,34 @@ const UpdateModal: React.FC<Props> = ({
   }
 
   useEffect(() => {
-    async function loadCustomer() {
+    async function loadCustomerInitialValues() {
       if (customerId) {
         const { data } = await api.get(`/api/customer/${customerId}`);
         setFormValues(data);
       }
     }
-    loadCustomer();
+    loadCustomerInitialValues();
   }, [customerId]);
 
   const initialValues = {
-    first_name: formValues?.first_name,
-    last_name: formValues?.last_name,
-    email_address: formValues?.email_address,
-    cpf: formValues?.cpf,
-    phone_number: formValues?.phone_number,
-    street_address:
-      formValues?.Addresses.length !== 0
-        ? `${formValues?.Addresses[0].street_address}`
-        : "",
-    city:
-      formValues?.Addresses.length !== 0
-        ? `${formValues?.Addresses[0].city}`
-        : "",
-    zip:
-      formValues?.Addresses.length !== 0
-        ? `${formValues?.Addresses[0].zip}`
-        : "",
-    country:
-      formValues?.Addresses.length !== 0
-        ? `${formValues?.Addresses[0].country}`
-        : "",
-    state:
-      formValues?.Addresses.length !== 0
-        ? `${formValues?.Addresses[0].state}`
-        : "",
+    first_name: formValues?.User.first_name,
+    last_name: formValues?.User.last_name,
+    email_address: formValues?.User.email_address,
+    cpf: formValues?.User.cpf,
+    phone_number: formValues?.User.phone_number,
+    street_address: formValues?.User.Addresses
+      ? `${formValues?.User.Addresses.street_address}`
+      : "",
+    city: formValues?.User.Addresses
+      ? `${formValues?.User.Addresses.city}`
+      : "",
+    zip: formValues?.User.Addresses ? `${formValues?.User.Addresses.zip}` : "",
+    country: formValues?.User.Addresses
+      ? `${formValues?.User.Addresses.country}`
+      : "",
+    state: formValues?.User.Addresses
+      ? `${formValues?.User.Addresses.state}`
+      : "",
     password: "",
     confirmPassword: ""
   };
@@ -138,14 +115,9 @@ const UpdateModal: React.FC<Props> = ({
             handleCloseModal={handleClose}
             customerId={customerId}
             initialValues={initialValues}
-            setCustomers={setCustomers}
-            addressesId={
-              formValues.Addresses.length !== 0
-                ? formValues.Addresses[0].id
-                : customerId
-            }
             setFeedbackData={setFeedbackData}
             setShowFeedback={setShowFeedback}
+            loadCustomers={loadCustomers}
           />
         </Modal.Body>
       </Modal>

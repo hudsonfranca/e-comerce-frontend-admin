@@ -4,31 +4,43 @@ import api from "../../../../services/Api";
 
 interface TableData {
   id: number;
+  id_customers: number;
+  id_payment_methods: number;
   status: "Completed" | "On hold" | "Pending payment" | "Processing";
-  Sale: {
+  amount: string;
+  created_at: string;
+  Products: {
     id: number;
-    id_customers: number;
-    id_payment_methods: number;
-    amount: string;
-    created_at: string;
-    Products: {
-      id: string;
-      name: string;
-      brand_id: number;
-      description: string;
+    name: string;
+    price: string;
+    description: string;
+    status: boolean;
+    Images: {
+      image: string;
+      small: string;
+      id: number;
+      id_product: number;
+      aspect_ratio: string;
     }[];
-    Customers: {
+    orders_products: {
+      quantity: number;
+    };
+  }[];
+  OrdersAddresse: {
+    id: number;
+    street_address: string;
+    city: string;
+    zip: string;
+    country: string;
+    state: string;
+  };
+  Customers: {
+    id: number;
+    User: {
+      id: number;
       first_name: string;
       last_name: string;
       email_address: string;
-      Addresses: {
-        id: number;
-        street_address: string;
-        city: string;
-        zip: string;
-        country: string;
-        state: string;
-      }[];
     };
   };
 }
@@ -61,7 +73,7 @@ interface Props {
   setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
 }
 
-const SearchInput: React.FC<Props> = ({
+const ToolsBar: React.FC<Props> = ({
   setOrders,
   setFeedbackData,
   setShowFeedback,
@@ -101,9 +113,12 @@ const SearchInput: React.FC<Props> = ({
 
   const handleChangeStatus = async (status: statusType) => {
     if (status === "All") {
-      const { data } = await api.get("/api/orders/index");
-
-      setOrders(data.rows);
+      try {
+        const { data } = await api.get("/api/orders/index");
+        if (data) {
+          setOrders(data.rows);
+        }
+      } catch (err) {}
     } else {
       const { data } = await api.get(`/api/orders/status/${status}`);
       setOrders(data.rows);
@@ -113,11 +128,10 @@ const SearchInput: React.FC<Props> = ({
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!!parseInt(inputValue)) {
-      const orderArr = [];
       try {
         const { data } = await api.get(`/api/orders/${inputValue}/show`);
         if (data) {
-          orderArr.push(data);
+          const orderArr = [data];
           setOrders(orderArr);
         }
       } catch (err) {
@@ -161,4 +175,4 @@ const SearchInput: React.FC<Props> = ({
   );
 };
 
-export default SearchInput;
+export default ToolsBar;

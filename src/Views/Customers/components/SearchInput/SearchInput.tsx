@@ -20,7 +20,7 @@ const SearchInput: React.FC<Props> = ({ onSubmit }) => {
           }
           value={inputValue}
           type="text"
-          placeholder="Search"
+          placeholder="Customer id..."
           className=" mr-sm-2"
         />
         <Button type="submit">Search</Button>

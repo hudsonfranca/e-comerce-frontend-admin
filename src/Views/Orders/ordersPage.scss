@@ -1,3 +1,11 @@
-.rowMinHeight {
+.row_Table_Orders_MinHeight {
   min-height: 100%;
+}
+
+.col_Orders_Pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 1em auto;
 }

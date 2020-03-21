@@ -1,4 +1,18 @@
-.rowMinHeight {
+.row_Table_Orders_MinHeight {
   min-height: 100%;
+}
+
+.col_Orders_Pagination {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+  margin: 1em auto;
 }
 /*# sourceMappingURL=ordersPage.css.map */

@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import api from "../../services/Api";
 import {
   Table,
-  Pagination,
   SearchAddBar,
   AlertFeedback,
   AddProductModal
 } from "./components";
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import Pagination from "material-ui-flat-pagination";
+import CssBaseline from "@material-ui/core/CssBaseline";
 import { Row, Col } from "react-bootstrap";
 import "../../styles/css/stockPage.css";
 
@@ -33,19 +35,39 @@ interface TableData {
   };
 }
 
+const theme = createMuiTheme();
+
 export const Stock: React.FC = () => {
   const [stock, setStock] = useState<TableData[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [stockPerPage] = useState<number>(10);
+
+  const [offset, setOffset] = useState(0);
+
+  const [totalStocks, setTotalStocks] = useState(0);
+
+  function handleClickPagination(offset: number) {
+    setOffset(offset);
+  }
 
   useEffect(() => {
     async function loadStock() {
-      const { data } = await api.get("/api/stock");
+      try {
+        const { data } = await api.get("/api/stock", {
+          params: {
+            offset,
+            limit: 2
+          }
+        });
 
-      setStock(data);
+        if (data) {
+          setStock(data.rows);
+          setTotalStocks(data.count);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
     loadStock();
-  }, []);
+  }, [offset]);
 
   const [showFeedback, setShowFeedback] = useState(false);
 
@@ -53,15 +75,6 @@ export const Stock: React.FC = () => {
     message: "",
     variant: "success"
   });
-
-  // Get current posts
-
-  const indexOfLastProduct = currentPage * stockPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - stockPerPage;
-  const currenstock = stock.slice(indexOfFirstProduct, indexOfLastProduct);
-
-  //Change page
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const [ShowAddProdModal, setShowAddProdModal] = useState(false);
 
@@ -95,10 +108,10 @@ export const Stock: React.FC = () => {
         </Col>
       </Row>
 
-      <Row className="rowMinHeight">
+      <Row className="col_stock_MinHeight ">
         <Col sm={12}>
           <Table
-            values={currenstock}
+            values={stock}
             setFeedbackData={setFeedbackData}
             setShowFeedback={setShowFeedback}
             setStock={setStock}
@@ -107,13 +120,18 @@ export const Stock: React.FC = () => {
       </Row>
 
       <Row>
-        <Col sm={12}>
-          <Pagination
-            stockPerPage={stockPerPage}
-            totalStock={stock.length}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
+        <Col className="col_stock_Pagination " sm={12}>
+          <MuiThemeProvider theme={theme}>
+            <CssBaseline />
+            <Pagination
+              limit={2}
+              offset={offset}
+              total={totalStocks}
+              onClick={(e, offset) => handleClickPagination(offset)}
+              size="large"
+              otherPageColor="primary"
+            />
+          </MuiThemeProvider>
         </Col>
       </Row>
     </>

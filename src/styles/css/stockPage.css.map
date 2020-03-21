@@ -1,6 +1,6 @@
 {
     "version": 3,
-    "mappings": "AAAA,AAAA,aAAa,CAAC;EACZ,UAAU,EAAE,IAAI;CACjB",
+    "mappings": "AAAA,AAAA,oBAAoB,CAAC;EACnB,UAAU,EAAE,IAAI;CACjB;;AAED,AAAA,qBAAqB,CAAC;EACpB,OAAO,EAAE,IAAI;EACb,eAAe,EAAE,MAAM;EACvB,WAAW,EAAE,MAAM;EACnB,KAAK,EAAE,IAAI;EACX,MAAM,EAAE,QAAQ;CACjB",
     "sources": [
         "../../Views/Stock/stockPage.scss"
     ],

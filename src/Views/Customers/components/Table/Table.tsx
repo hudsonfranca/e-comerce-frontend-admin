@@ -5,6 +5,7 @@ import UpdateModal from "../UpdateModal";
 import { Table } from "react-bootstrap";
 
 interface Addresses {
+  id: number;
   street_address: string;
   city: string;
   zip: string;
@@ -14,13 +15,15 @@ interface Addresses {
 
 interface TableData {
   id: number;
-  first_name: string;
-  last_name: string;
-  email_address: string;
-  cpf: string;
-  phone_number: string;
-  createdAt: string;
-  Addresses: Addresses[];
+  User: {
+    first_name: string;
+    last_name: string;
+    email_address: string;
+    cpf: string;
+    phone_number: string;
+    createdAt: string;
+    Addresses: Addresses;
+  };
 }
 
 interface alertValues {
@@ -41,14 +44,14 @@ interface Props {
   values: TableData[] | null;
   setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
   setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
-  setCustomers: React.Dispatch<React.SetStateAction<TableData[]>>;
+  loadCustomers: () => void;
 }
 
 const CustomerTable: React.FC<Props> = ({
   values,
   setFeedbackData,
   setShowFeedback,
-  setCustomers
+  loadCustomers
 }) => {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [updateId, setUpdateId] = useState<number | null>(null);
@@ -73,7 +76,7 @@ const CustomerTable: React.FC<Props> = ({
         setShow={setShowDeleteModal}
         setFeedbackData={setFeedbackData}
         setShowFeedback={setShowFeedback}
-        setCustomers={setCustomers}
+        loadCustomers={loadCustomers}
       />
       <UpdateModal
         customerId={updateId}
@@ -81,7 +84,7 @@ const CustomerTable: React.FC<Props> = ({
         setShow={setShowUpdateModal}
         setFeedbackData={setFeedbackData}
         setShowFeedback={setShowFeedback}
-        setCustomers={setCustomers}
+        loadCustomers={loadCustomers}
       />
 
       <Table striped bordered responsive="sm" size="sm">
@@ -100,19 +103,19 @@ const CustomerTable: React.FC<Props> = ({
         </thead>
         <tbody>
           {values &&
-            values.map(data => (
+            values.map((data: TableData) => (
               <tr key={data.id}>
                 <th scope="row">{data.id}</th>
-                <td>{`${data.first_name} ${data.last_name}`}</td>
-                <td>{data.email_address}</td>
-                <td>{data.cpf}</td>
-                <td>{data.phone_number}</td>
+                <td>{`${data.User.first_name} ${data.User.last_name}`}</td>
+                <td>{data.User.email_address}</td>
+                <td>{data.User.cpf}</td>
+                <td>{data.User.phone_number}</td>
                 <td>
-                  {data.Addresses.length !== 0
-                    ? `${data.Addresses[0].street_address}, ${data.Addresses[0].city}, ${data.Addresses[0].state}`
+                  {data.User.Addresses
+                    ? `${data.User.Addresses.street_address}, ${data.User.Addresses.city}, ${data.User.Addresses.state}`
                     : ""}
                 </td>
-                <td>{moment(data.createdAt).format("DD/MM/YYYY")}</td>
+                <td>{moment(data.User.createdAt).format("DD/MM/YYYY")}</td>
                 <td>
                   <p>
                     <button

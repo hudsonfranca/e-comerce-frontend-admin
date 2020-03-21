@@ -1,6 +1,6 @@
 {
     "version": 3,
-    "mappings": "AAAA,AAAA,aAAa,CAAC;EACZ,UAAU,EAAE,IAAI;CACjB",
+    "mappings": "AAAA,AAAA,2BAA2B,CAAC;EAC1B,UAAU,EAAE,IAAI;CACjB;;AAED,AAAA,sBAAsB,CAAC;EACrB,OAAO,EAAE,IAAI;EACb,eAAe,EAAE,MAAM;EACvB,WAAW,EAAE,MAAM;EACnB,KAAK,EAAE,IAAI;EACX,MAAM,EAAE,QAAQ;CACjB",
     "sources": [
         "../../Views/Orders/ordersPage.scss"
     ],

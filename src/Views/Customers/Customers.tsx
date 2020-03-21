@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import api from "../../services/Api";
-import { Table, Pagination, Searchinput, AlertFeedback } from "./components";
+import { Table, Searchinput, AlertFeedback } from "./components";
 import { Row, Col } from "react-bootstrap";
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import Pagination from "material-ui-flat-pagination";
+import CssBaseline from "@material-ui/core/CssBaseline";
 import "../../styles/css/CustomersPage.css";
 
 interface alertValues {
@@ -19,6 +22,7 @@ interface alertValues {
 }
 
 interface Addresses {
+  id: number;
   street_address: string;
   city: string;
   zip: string;
@@ -28,49 +32,45 @@ interface Addresses {
 
 interface TableData {
   id: number;
-  first_name: string;
-  last_name: string;
-  email_address: string;
-  cpf: string;
-  phone_number: string;
-  createdAt: string;
-  Addresses: Addresses[];
+  User: {
+    first_name: string;
+    last_name: string;
+    email_address: string;
+    cpf: string;
+    phone_number: string;
+    createdAt: string;
+    Addresses: Addresses;
+  };
 }
+
+const theme = createMuiTheme();
 
 export const Customers: React.FC = () => {
   const [customers, setCustomers] = useState<TableData[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [customersPerPage] = useState<number>(10);
+  const [offset, setOffset] = useState(0);
+
+  const [TotalProducts, setTotalProducts] = useState(0);
+
+  function handleClickPagination(offset: number) {
+    setOffset(offset);
+  }
+
+  async function loadCustomers() {
+    const { data } = await api.get("/api/customer", {
+      params: {
+        offset,
+        limit: 10
+      }
+    });
+    if (data) {
+      setCustomers(data.rows);
+      setTotalProducts(data.count);
+    }
+  }
 
   useEffect(() => {
-    async function loadCustomers() {
-      const { data } = await api.get("/api/customer");
-
-      setCustomers(data);
-    }
     loadCustomers();
-  }, []);
-
-  // Get current posts
-  const indexOfLastCustomer = currentPage * customersPerPage;
-  const indexOfFirstCustomer = indexOfLastCustomer - customersPerPage;
-  const currenCustomers = customers.slice(
-    indexOfFirstCustomer,
-    indexOfLastCustomer
-  );
-
-  //Change page
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-  async function handleSubmit(
-    event: React.FormEvent<HTMLFormElement>,
-    data: any
-  ) {
-    event.preventDefault();
-    const response = await api.get(`/api/customer/search?name=${data}`);
-
-    setCustomers(response.data);
-  }
+  }, [offset]);
 
   const [showFeedback, setShowFeedback] = useState(false);
 
@@ -78,6 +78,33 @@ export const Customers: React.FC = () => {
     message: "",
     variant: "success"
   });
+
+  async function handleSubmit(
+    event: React.FormEvent<HTMLFormElement>,
+    id: number
+  ) {
+    event.preventDefault();
+
+    try {
+      const response = await api.get(`/api/customer/${id}/show`);
+      if (response.data) {
+        const customerArray = [response.data];
+        setCustomers(customerArray);
+      } else {
+        setFeedbackData({
+          message: "Try a different search id.",
+          variant: "warning"
+        });
+        setShowFeedback(true);
+      }
+    } catch (err) {
+      setFeedbackData({
+        message: "Try a different search id.",
+        variant: "warning"
+      });
+      setShowFeedback(true);
+    }
+  }
 
   return (
     <>
@@ -102,22 +129,27 @@ export const Customers: React.FC = () => {
       <Row className="rowMinHeight">
         <Col sm={12}>
           <Table
-            values={currenCustomers}
+            values={customers}
             setFeedbackData={setFeedbackData}
             setShowFeedback={setShowFeedback}
-            setCustomers={setCustomers}
+            loadCustomers={loadCustomers}
           />
         </Col>
       </Row>
 
       <Row>
-        <Col sm={12}>
-          <Pagination
-            customersPerPage={customersPerPage}
-            totalCustomers={customers.length}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
+        <Col className="rowPagination" sm={12}>
+          <MuiThemeProvider theme={theme}>
+            <CssBaseline />
+            <Pagination
+              limit={10}
+              offset={offset}
+              total={TotalProducts}
+              onClick={(e, offset) => handleClickPagination(offset)}
+              size="large"
+              otherPageColor="primary"
+            />
+          </MuiThemeProvider>
         </Col>
       </Row>
     </>

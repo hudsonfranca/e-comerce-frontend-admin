@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import api from "../../services/Api";
-import { Table, Pagination, Searchinput, AlertFeedback } from "./components";
+import { Table, ToolsBar, AlertFeedback } from "./components";
 import { Row, Col } from "react-bootstrap";
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import Pagination from "material-ui-flat-pagination";
+import CssBaseline from "@material-ui/core/CssBaseline";
 import "../../styles/css/ordersPage.css";
 
 interface alertValues {
@@ -20,56 +23,80 @@ interface alertValues {
 
 interface TableData {
   id: number;
+  id_customers: number;
+  id_payment_methods: number;
   status: "Completed" | "On hold" | "Pending payment" | "Processing";
-  Sale: {
+  amount: string;
+  created_at: string;
+  Products: {
     id: number;
-    id_customers: number;
-    id_payment_methods: number;
-    amount: string;
-    created_at: string;
-    Products: {
-      id: string;
-      name: string;
-      brand_id: number;
-      description: string;
+    name: string;
+    price: string;
+    description: string;
+    status: boolean;
+    Images: {
+      image: string;
+      small: string;
+      id: number;
+      id_product: number;
+      aspect_ratio: string;
     }[];
-    Customers: {
+    orders_products: {
+      quantity: number;
+    };
+  }[];
+  OrdersAddresse: {
+    id: number;
+    street_address: string;
+    city: string;
+    zip: string;
+    country: string;
+    state: string;
+  };
+  Customers: {
+    id: number;
+    User: {
+      id: number;
       first_name: string;
       last_name: string;
       email_address: string;
-      Addresses: {
-        id: number;
-        street_address: string;
-        city: string;
-        zip: string;
-        country: string;
-        state: string;
-      }[];
     };
   };
 }
 
+const theme = createMuiTheme();
+
 export const Orders: React.FC = () => {
   const [orders, setOrders] = useState<TableData[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [ordersPerPage] = useState<number>(10);
+
+  const [offset, setOffset] = useState(0);
+
+  const [TotalOrders, setTotalOrders] = useState(0);
+
+  function handleClickPagination(offset: number) {
+    setOffset(offset);
+  }
+
+  async function loadOrders() {
+    try {
+      const { data } = await api.get("/api/orders/index", {
+        params: {
+          offset,
+          limit: 10
+        }
+      });
+      if (data) {
+        setOrders(data.rows);
+        setTotalOrders(data.count);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   useEffect(() => {
-    async function loadOrders() {
-      const { data } = await api.get("/api/orders/index");
-
-      setOrders(data.rows);
-    }
     loadOrders();
   }, []);
-
-  // Get current posts
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstCustomer = indexOfLastOrder - ordersPerPage;
-  const currenOrders = orders.slice(indexOfFirstCustomer, indexOfLastOrder);
-
-  //Change page
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const [showFeedback, setShowFeedback] = useState(false);
 
@@ -94,7 +121,7 @@ export const Orders: React.FC = () => {
 
       <Row>
         <Col sm={12}>
-          <Searchinput
+          <ToolsBar
             setFeedbackData={setFeedbackData}
             setOrders={setOrders}
             setShowFeedback={setShowFeedback}
@@ -103,25 +130,31 @@ export const Orders: React.FC = () => {
         </Col>
       </Row>
 
-      <Row className="rowMinHeight">
+      <Row className="row_Table_Orders_MinHeight">
         <Col sm={12}>
           <Table
-            values={currenOrders}
+            values={orders}
             setFeedbackData={setFeedbackData}
             setShowFeedback={setShowFeedback}
             setOrders={setOrders}
+            loadOrders={loadOrders}
           />
         </Col>
       </Row>
 
       <Row>
-        <Col sm={12}>
-          <Pagination
-            ordersPerPage={ordersPerPage}
-            totalOrders={orders.length}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
+        <Col className="col_Orders_Pagination" sm={12}>
+          <MuiThemeProvider theme={theme}>
+            <CssBaseline />
+            <Pagination
+              limit={10}
+              offset={offset}
+              total={TotalOrders}
+              onClick={(e, offset) => handleClickPagination(offset)}
+              size="large"
+              otherPageColor="primary"
+            />
+          </MuiThemeProvider>
         </Col>
       </Row>
     </>
