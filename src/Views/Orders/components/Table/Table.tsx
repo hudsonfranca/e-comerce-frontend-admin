@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from "react";
+import React, { useState } from "react";
 import ViewModal from "../ViewModal";
 import moment from "moment";
 import api from "../../../../services/Api";

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import DeleteModal from "../DeleteModal";
 import UpdateProductModal from "../UpdateProductModal";
@@ -71,10 +71,6 @@ const ProductsTable: React.FC<Props> = ({
     setProductId(id);
     setShowCarouselModal(true);
   }
-
-  useEffect(() => {
-    console.log(values);
-  }, []);
 
   return (
     <>

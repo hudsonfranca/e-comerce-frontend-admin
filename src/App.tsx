@@ -11,7 +11,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <CustomNavbar />
         <Main>
-          <Routes setShowNavItems={setShowNavItems} />
+          <Routes />
         </Main>
       </BrowserRouter>
     </navbarContext.Provider>

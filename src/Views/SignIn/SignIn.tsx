@@ -2,7 +2,7 @@ import React, { useEffect, useContext } from "react";
 import { navbarContext } from "../../NavbarContext";
 import api from "../../services/Api";
 import { RouteComponentProps } from "react-router-dom";
-import { Formik, FormikProps } from "formik";
+import { Formik } from "formik";
 
 import { Form, Col, Button, Spinner } from "react-bootstrap";
 import * as yup from "yup";
@@ -29,8 +29,12 @@ const SignIn: React.FC<RouteComponentProps> = ({ history }) => {
   const { setShowNavItems } = useContext(navbarContext);
 
   useEffect(() => {
-    setShowNavItems(false);
-    document.title = "Sign in";
+    if (sessionStorage.getItem("authorization")) {
+      history.push("/customers");
+    } else {
+      setShowNavItems(false);
+      document.title = "Sign in";
+    }
   }, []);
 
   return (

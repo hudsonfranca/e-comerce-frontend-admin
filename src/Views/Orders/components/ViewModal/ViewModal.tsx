@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import moment from "moment";
-import api from "../../../../services/Api";
 
 import { ListGroup, Modal, Table } from "react-bootstrap";
 

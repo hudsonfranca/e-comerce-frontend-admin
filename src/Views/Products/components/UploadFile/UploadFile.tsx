@@ -174,6 +174,7 @@ export const UploadFile: React.FC<Props> = ({ setFiles, files, updateId }) => {
                     {file.readableSize}
 
                     <button
+                      type="button"
                       className="delete-button"
                       onClick={() => handleDelete(file.id)}
                     >
@@ -197,6 +198,7 @@ export const UploadFile: React.FC<Props> = ({ setFiles, files, updateId }) => {
                     <strong>{fileName}</strong>
                     <span className="file-size">
                       <button
+                        type="button"
                         className="delete-button"
                         onClick={() => handleDeleteFromDB(id)}
                       >
@@ -205,7 +207,6 @@ export const UploadFile: React.FC<Props> = ({ setFiles, files, updateId }) => {
                     </span>
                   </div>
                 </div>
-                <div></div>
               </li>
             );
           })}

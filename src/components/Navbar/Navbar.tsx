@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 interface Props {}
 
-const CustoNavbar: React.FC<Props> = ({}) => {
+const CustoNavbar: React.FC<Props> = () => {
   const { showNavItems } = useContext(navbarContext);
   const history = useHistory();
 

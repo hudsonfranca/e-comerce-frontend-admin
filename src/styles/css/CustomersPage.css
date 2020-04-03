@@ -1,5 +1,5 @@
 .rowMinHeight {
-  min-height: 100%;
+  height: 100%;
 }
 
 .rowPagination {
@@ -14,5 +14,7 @@
           align-items: center;
   width: 100%;
   margin: 1em auto;
+  -ms-flex-item-align: end;
+      align-self: flex-end;
 }
 /*# sourceMappingURL=CustomersPage.css.map */

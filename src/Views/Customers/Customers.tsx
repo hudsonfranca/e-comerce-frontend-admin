@@ -46,9 +46,7 @@ interface TableData {
 
 const theme = createMuiTheme();
 
-interface Props {}
-
-export const Customers: React.FC<Props> = ({}) => {
+export const Customers: React.FC = () => {
   const { setShowNavItems } = useContext(navbarContext);
 
   useEffect(() => {

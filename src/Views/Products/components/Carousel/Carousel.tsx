@@ -16,8 +16,6 @@ interface Images {
 export const Carousels: React.FC<Props> = ({ productId }) => {
   const [images, setImages] = useState<Images[] | null>(null);
 
-  console.log(productId);
-
   useEffect(() => {
     async function loadImages() {
       if (productId) {
@@ -25,7 +23,7 @@ export const Carousels: React.FC<Props> = ({ productId }) => {
         setImages(data);
       }
     }
-    console.log(images);
+
     loadImages();
   }, []);
 

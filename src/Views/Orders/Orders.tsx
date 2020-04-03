@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import api from "../../services/Api";
 import { Table, ToolsBar, AlertFeedback } from "./components";
+import { navbarContext } from "../../NavbarContext";
 import { Row, Col } from "react-bootstrap";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Pagination from "material-ui-flat-pagination";
@@ -67,6 +68,13 @@ interface TableData {
 const theme = createMuiTheme();
 
 export const Orders: React.FC = () => {
+  const { setShowNavItems } = useContext(navbarContext);
+
+  useEffect(() => {
+    setShowNavItems(true);
+    document.title = "Orders";
+  }, []);
+
   const [orders, setOrders] = useState<TableData[]>([]);
 
   const [offset, setOffset] = useState(0);

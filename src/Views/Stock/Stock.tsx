@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import api from "../../services/Api";
 import { Table, SearchBar, AlertFeedback } from "./components";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Pagination from "material-ui-flat-pagination";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { navbarContext } from "../../NavbarContext";
 import { Row, Col } from "react-bootstrap";
 import "../../styles/css/stockPage.css";
 
@@ -33,6 +34,13 @@ interface TableData {
 const theme = createMuiTheme();
 
 export const Stock: React.FC = () => {
+  const { setShowNavItems } = useContext(navbarContext);
+
+  useEffect(() => {
+    setShowNavItems(true);
+    document.title = "Stock";
+  }, []);
+
   const [stock, setStock] = useState<TableData[]>([]);
 
   const [offset, setOffset] = useState(0);

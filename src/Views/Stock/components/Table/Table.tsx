@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import UpdateProductModal from "../UpdateStockModal";
-import { Table, Badge, Button } from "react-bootstrap";
+import { Table, Button } from "react-bootstrap";
 
 interface TableData {
   name: string;
@@ -65,7 +65,7 @@ const ProductsTable: React.FC<Props> = ({
       <Table
         striped
         bordered
-        responsive="sm"
+        responsive
         size="sm"
         style={{ overflowX: "auto" }}
       >
