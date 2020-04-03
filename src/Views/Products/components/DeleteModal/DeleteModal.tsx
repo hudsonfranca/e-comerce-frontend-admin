@@ -22,8 +22,14 @@ interface TableData {
   description: string;
   price: string;
   status: boolean;
-  Images: { url: string }[];
+  Images: {
+    image: string;
+    id: number;
+    id_product: number;
+    aspect_ratio: string;
+  }[];
   Brand: { id: number; name: string };
+  Categories: { id: number; name: string };
 }
 
 interface Props {
@@ -32,7 +38,7 @@ interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
   setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
-  setProducts: React.Dispatch<React.SetStateAction<TableData[]>>;
+  loadproducts: () => void;
 }
 
 const DeleteModal: React.FC<Props> = ({
@@ -41,7 +47,7 @@ const DeleteModal: React.FC<Props> = ({
   deleteId,
   setFeedbackData,
   setShowFeedback,
-  setProducts
+  loadproducts
 }) => {
   const handleClose = () => setShow(false);
 
@@ -58,12 +64,7 @@ const DeleteModal: React.FC<Props> = ({
           handleClose();
         })
         .then(() => {
-          async function loadProducts() {
-            const { data } = await api.get("/api/products");
-
-            setProducts(data);
-          }
-          loadProducts();
+          loadproducts();
         });
     } catch (err) {
       setFeedbackData({

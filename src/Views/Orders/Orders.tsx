@@ -96,7 +96,7 @@ export const Orders: React.FC = () => {
 
   useEffect(() => {
     loadOrders();
-  }, []);
+  }, [offset]);
 
   const [showFeedback, setShowFeedback] = useState(false);
 

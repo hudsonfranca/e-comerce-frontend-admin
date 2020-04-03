@@ -4,6 +4,7 @@ import "../../../../styles/css/UploadFile.css";
 import { uniqueId } from "lodash";
 import filesize from "filesize";
 import api from "../../../../services/Api";
+import { resolve } from "url";
 
 const baseStyle = {
   flex: 1,
@@ -41,22 +42,49 @@ interface Props {
   updateId?: number | null;
 }
 
+interface Images {
+  image: string;
+  id: number;
+  id_product: number;
+  aspect_ratio: string;
+}
+
 export const UploadFile: React.FC<Props> = ({ setFiles, files, updateId }) => {
   const onDrop = useCallback(acceptedFiles => {}, []);
 
-  const onDropAccepted = (file: any) => {
+  const getAspectRatio = (file: any) =>
+    new Promise((resolve, reject) => {
+      const newImg = new Image();
+
+      newImg.onload = () => {
+        const { naturalWidth, naturalHeight } = newImg;
+        const aspectRatio = naturalWidth / naturalHeight;
+
+        resolve(aspectRatio);
+      };
+
+      newImg.onerror = () => {
+        reject("There was some problem with the image.");
+      };
+
+      newImg.src = URL.createObjectURL(file);
+    });
+
+  const onDropAccepted = async (file: any) => {
+    const aspectRatio = await getAspectRatio(file[0]);
     const uploadedFiles = file.map((file: any) => ({
       file,
       id: uniqueId(),
       name: file.name,
       readableSize: filesize(file.size),
-      preview: URL.createObjectURL(file)
+      preview: URL.createObjectURL(file),
+      aspectRatio
     }));
 
     setFiles(files.concat(uploadedFiles));
   };
 
-  const [imagesDB, setImagesDB] = useState<{ id: number; url: string }[]>([]);
+  const [imagesDB, setImagesDB] = useState<Images[]>([]);
 
   useEffect(() => {
     if (updateId) {
@@ -159,12 +187,12 @@ export const UploadFile: React.FC<Props> = ({ setFiles, files, updateId }) => {
           ))}
 
         {!!imagesDB.length &&
-          imagesDB.map(({ id, url }) => {
-            const fileName = url.substring(28);
+          imagesDB.map(({ id, image }) => {
+            const fileName = image.substring(28);
             return (
               <li key={id}>
                 <div className="file-info">
-                  <img className="preview" src={url} alt="preview" />
+                  <img className="preview" src={image} alt="preview" />
                   <div className="preview-body">
                     <strong>{fileName}</strong>
                     <span className="file-size">

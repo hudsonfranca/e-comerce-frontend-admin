@@ -41,8 +41,14 @@ interface TableData {
   description: string;
   price: string;
   status: boolean;
-  Images: { url: string }[];
+  Images: {
+    image: string;
+    id: number;
+    id_product: number;
+    aspect_ratio: string;
+  }[];
   Brand: { id: number; name: string };
+  Categories: { id: number; name: string };
 }
 
 interface alertValues {
@@ -68,6 +74,7 @@ interface Props {
   setProducts: React.Dispatch<React.SetStateAction<TableData[]>>;
   initialValues: any;
   updateId: number | null;
+  loadproducts: () => void;
 }
 
 export const AddProductForm: React.FC<Props> = ({
@@ -76,7 +83,8 @@ export const AddProductForm: React.FC<Props> = ({
   setFeedbackData,
   setShowFeedback,
   initialValues,
-  updateId
+  updateId,
+  loadproducts
 }) => {
   const [brand, setBrand] = useState<{ id: number; name: string }[] | null>(
     null
@@ -119,10 +127,13 @@ export const AddProductForm: React.FC<Props> = ({
           if (data && !!files.length) {
             files.map(async (uploadedFile: any) => {
               const imageFormData = new FormData();
-              imageFormData.append("photos", uploadedFile.file);
+              imageFormData.append("image", uploadedFile.file);
 
               uploadImagesPromisses.push(
-                api.post(`/api/product/${updateId}/images`, imageFormData)
+                api.post(
+                  `/api/product/${updateId}/images/${uploadedFile.aspectRatio}`,
+                  imageFormData
+                )
               );
             });
             Promise.all(uploadImagesPromisses).then((response: any) => {
@@ -134,11 +145,6 @@ export const AddProductForm: React.FC<Props> = ({
               resetForm({});
               setSubmitting(false);
               handleCloseModal();
-              async function loadproducts() {
-                const { data } = await api.get("/api/products");
-
-                setProducts(data);
-              }
               loadproducts();
             });
           } else if (data && !files.length) {

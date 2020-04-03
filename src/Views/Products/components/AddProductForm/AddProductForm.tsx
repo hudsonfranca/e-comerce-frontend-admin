@@ -29,29 +29,25 @@ const schema = yup.object({
     .number()
     .required()
     .label("Brand"),
-  categorie: yup
+  categorie_id: yup
     .string()
     .required()
-    .label("Categorie")
+    .label("Categorie"),
+  quantity: yup
+    .string()
+    .required()
+    .min(0)
+    .label("Quantity")
 });
 
-interface FormValues {
+interface ProductValues {
   name: string;
   description: string;
   price: string;
   status: string;
   brand_id: string;
-  categorie: string;
-}
-
-interface TableData {
-  id: number;
-  name: string;
-  description: string;
-  price: string;
-  status: boolean;
-  Images: { url: string }[];
-  Brand: { id: number; name: string };
+  categorie_id: string;
+  quantity: string;
 }
 
 interface alertValues {
@@ -72,14 +68,16 @@ interface Props {
   handleCloseModal: () => void;
   setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
   setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
-  setProducts: React.Dispatch<React.SetStateAction<TableData[]>>;
+
+  loadproducts: () => void;
 }
 
 export const AddProductForm: React.FC<Props> = ({
   handleCloseModal,
-  setProducts,
+
   setFeedbackData,
-  setShowFeedback
+  setShowFeedback,
+  loadproducts
 }) => {
   const [brand, setBrand] = useState<{ id: number; name: string }[]>();
   const [categories, setCategories] = useState<
@@ -108,7 +106,8 @@ export const AddProductForm: React.FC<Props> = ({
     price: "",
     status: "",
     brand_id: "",
-    categorie: ""
+    categorie_id: "",
+    quantity: ""
   };
 
   const [files, setFiles] = useState<any>([]);
@@ -117,23 +116,23 @@ export const AddProductForm: React.FC<Props> = ({
     <Formik
       initialValues={initialValues}
       validationSchema={schema}
-      onSubmit={async (values: FormValues, { setSubmitting, resetForm }) => {
+      onSubmit={async (values: ProductValues, { setSubmitting, resetForm }) => {
         try {
           setSubmitting(true);
-          const { data } = await api.post(
-            `/api/categorie/${values.categorie}/products`,
-            values
-          );
+          const { data } = await api.post(`/api/products`, values);
 
           let uploadImagesPromisses: any = [];
 
           if (data) {
             files.map(async (uploadedFile: any) => {
               const imageFormData = new FormData();
-              imageFormData.append("photos", uploadedFile.file);
+              imageFormData.append("image", uploadedFile.file);
 
               uploadImagesPromisses.push(
-                api.post(`/api/product/${data}/images`, imageFormData)
+                api.post(
+                  `/api/product/${data}/images/${uploadedFile.aspectRatio}`,
+                  imageFormData
+                )
               );
             });
             Promise.all(uploadImagesPromisses).then((response: any) => {
@@ -145,11 +144,6 @@ export const AddProductForm: React.FC<Props> = ({
               resetForm({});
               setSubmitting(false);
               handleCloseModal();
-              async function loadproducts() {
-                const { data } = await api.get("/api/products");
-
-                setProducts(data);
-              }
               loadproducts();
             });
           }
@@ -176,7 +170,7 @@ export const AddProductForm: React.FC<Props> = ({
         isValid,
         errors,
         isSubmitting
-      }: FormikProps<FormValues>) => (
+      }: FormikProps<ProductValues>) => (
         <Form onSubmit={handleSubmit}>
           <Form.Row>
             <Form.Group as={Col} controlId="formGridEmail">
@@ -243,11 +237,11 @@ export const AddProductForm: React.FC<Props> = ({
               <Form.Label>Categorie</Form.Label>
               <Form.Control
                 as="select"
-                name="categorie"
-                value={values.categorie}
+                name="categorie_id"
+                value={values.categorie_id}
                 onChange={handleChange}
-                isValid={touched.categorie && !errors.categorie}
-                isInvalid={!!errors.categorie}
+                isValid={touched.categorie_id && !errors.categorie_id}
+                isInvalid={!!errors.categorie_id}
                 onBlur={handleBlur}
               >
                 <option>Categorie...</option>
@@ -259,7 +253,7 @@ export const AddProductForm: React.FC<Props> = ({
                   ))}
               </Form.Control>
               <Form.Control.Feedback type="invalid">
-                {errors.categorie}
+                {errors.categorie_id}
               </Form.Control.Feedback>
             </Form.Group>
 
@@ -280,6 +274,23 @@ export const AddProductForm: React.FC<Props> = ({
               </Form.Control>
               <Form.Control.Feedback type="invalid">
                 {errors.status}
+              </Form.Control.Feedback>
+            </Form.Group>
+
+            <Form.Group as={Col} controlId="formGridEmail">
+              <Form.Label>Quantity</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Quantity"
+                name="quantity"
+                value={values.quantity}
+                isInvalid={!!errors.quantity}
+                isValid={touched.quantity && !errors.quantity}
+                onBlur={handleBlur}
+                onChange={handleChange}
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.quantity}
               </Form.Control.Feedback>
             </Form.Group>
           </Form.Row>

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import api from "../../services/Api";
+import { navbarContext } from "../../NavbarContext";
 import { Table, Searchinput, AlertFeedback } from "./components";
 import { Row, Col } from "react-bootstrap";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
@@ -45,7 +46,16 @@ interface TableData {
 
 const theme = createMuiTheme();
 
-export const Customers: React.FC = () => {
+interface Props {}
+
+export const Customers: React.FC<Props> = ({}) => {
+  const { setShowNavItems } = useContext(navbarContext);
+
+  useEffect(() => {
+    setShowNavItems(true);
+    document.title = "Customers";
+  }, []);
+
   const [customers, setCustomers] = useState<TableData[]>([]);
   const [offset, setOffset] = useState(0);
 

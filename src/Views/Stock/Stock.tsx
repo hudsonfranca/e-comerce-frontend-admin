@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../../services/Api";
-import {
-  Table,
-  SearchAddBar,
-  AlertFeedback,
-  AddProductModal
-} from "./components";
+import { Table, SearchBar, AlertFeedback } from "./components";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Pagination from "material-ui-flat-pagination";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -27,11 +22,11 @@ interface alertValues {
 }
 
 interface TableData {
-  id: number;
-  quantity: number;
-  id_product: number;
-  Products: {
-    name: string;
+  name: string;
+  Stock: {
+    id: number;
+    quantity: number;
+    id_product: number;
   };
 }
 
@@ -48,24 +43,20 @@ export const Stock: React.FC = () => {
     setOffset(offset);
   }
 
-  useEffect(() => {
-    async function loadStock() {
-      try {
-        const { data } = await api.get("/api/stock", {
-          params: {
-            offset,
-            limit: 2
-          }
-        });
+  async function loadStock() {
+    try {
+      const { data } = await api.get(`/api/stock/${offset}/${10}`);
 
-        if (data) {
-          setStock(data.rows);
-          setTotalStocks(data.count);
-        }
-      } catch (err) {
-        console.log(err);
+      if (data) {
+        setStock(data.rows);
+        setTotalStocks(data.count);
       }
+    } catch (err) {
+      console.log(err);
     }
+  }
+
+  useEffect(() => {
     loadStock();
   }, [offset]);
 
@@ -75,18 +66,8 @@ export const Stock: React.FC = () => {
     message: "",
     variant: "success"
   });
-
-  const [ShowAddProdModal, setShowAddProdModal] = useState(false);
-
   return (
     <>
-      <AddProductModal
-        show={ShowAddProdModal}
-        setFeedbackData={setFeedbackData}
-        setStock={setStock}
-        setShow={setShowAddProdModal}
-        setShowFeedback={setShowFeedback}
-      />
       <Row>
         <Col sm={12}>
           <AlertFeedback
@@ -101,10 +82,7 @@ export const Stock: React.FC = () => {
 
       <Row>
         <Col sm={12}>
-          <SearchAddBar
-            setStock={setStock}
-            showAddModal={setShowAddProdModal}
-          />
+          <SearchBar setStock={setStock} />
         </Col>
       </Row>
 
@@ -114,7 +92,7 @@ export const Stock: React.FC = () => {
             values={stock}
             setFeedbackData={setFeedbackData}
             setShowFeedback={setShowFeedback}
-            setStock={setStock}
+            loadStock={loadStock}
           />
         </Col>
       </Row>
@@ -124,7 +102,7 @@ export const Stock: React.FC = () => {
           <MuiThemeProvider theme={theme}>
             <CssBaseline />
             <Pagination
-              limit={2}
+              limit={10}
               offset={offset}
               total={totalStocks}
               onClick={(e, offset) => handleClickPagination(offset)}

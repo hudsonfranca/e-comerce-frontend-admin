@@ -5,16 +5,15 @@ import * as yup from "yup";
 import api from "../../../../services/Api";
 
 interface TableData {
-  id: number;
-  quantity: number;
-  id_product: number;
-  Products: {
-    name: string;
+  name: string;
+  Stock: {
+    id: number;
+    quantity: number;
+    id_product: number;
   };
 }
 
 interface Props {
-  showAddModal: React.Dispatch<React.SetStateAction<boolean>>;
   setStock: React.Dispatch<React.SetStateAction<TableData[]>>;
 }
 
@@ -25,8 +24,7 @@ const schema = yup.object({
     .label("Id")
 });
 
-const SearchAddBar: React.FC<Props> = ({ showAddModal, setStock }) => {
-  const [inputValue, setInputValue] = useState<string>("");
+const SearchBar: React.FC<Props> = ({ setStock }) => {
   return (
     <Formik
       initialValues={{ id: "" }}
@@ -78,13 +76,10 @@ const SearchAddBar: React.FC<Props> = ({ showAddModal, setStock }) => {
               </Form.Group>
             </Form.Row>
           </Form>
-          <Button variant="primary" onClick={() => showAddModal(true)}>
-            ADD Stock
-          </Button>
         </nav>
       )}
     </Formik>
   );
 };
 
-export default SearchAddBar;
+export default SearchBar;

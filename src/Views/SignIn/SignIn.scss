@@ -1,0 +1,30 @@
+@import "./media";
+
+.signIn_Page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .signIn_form {
+    padding: 50px;
+    border-radius: 10px;
+
+    @include for-phone-only {
+      width: 90%;
+      height: 60%;
+    }
+    @include for-tablet-portrait-up {
+      width: 70%;
+      height: 40%;
+    }
+
+    @include for-tablet-landscape-up {
+      width: 50%;
+      height: 60%;
+    }
+
+    box-shadow: -1px 0px 16px 0px rgba(50, 50, 50, 0.75);
+  }
+}

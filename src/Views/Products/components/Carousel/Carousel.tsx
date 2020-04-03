@@ -6,10 +6,17 @@ interface Props {
   productId: number | null;
 }
 
+interface Images {
+  image: string;
+  id: number;
+  id_product: number;
+  aspect_ratio: string;
+}
+
 export const Carousels: React.FC<Props> = ({ productId }) => {
-  const [images, setImages] = useState<{ url: string; id: number }[] | null>(
-    null
-  );
+  const [images, setImages] = useState<Images[] | null>(null);
+
+  console.log(productId);
 
   useEffect(() => {
     async function loadImages() {
@@ -18,15 +25,16 @@ export const Carousels: React.FC<Props> = ({ productId }) => {
         setImages(data);
       }
     }
+    console.log(images);
     loadImages();
-  }, [productId]);
-  console.log(images);
+  }, []);
+
   return (
     <Carousel>
       {!!images?.length &&
-        images.map(({ url, id }) => (
+        images.map(({ image, id }) => (
           <Carousel.Item key={id}>
-            <img className="d-block w-100" src={url} alt="First slide" />
+            <img className="d-block w-100" src={image} alt="First slide" />
           </Carousel.Item>
         ))}
     </Carousel>

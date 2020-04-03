@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import DeleteModal from "../DeleteModal";
 import UpdateProductModal from "../UpdateProductModal";
@@ -11,8 +11,14 @@ interface TableData {
   description: string;
   price: string;
   status: boolean;
-  Images: { url: string }[];
+  Images: {
+    image: string;
+    id: number;
+    id_product: number;
+    aspect_ratio: string;
+  }[];
   Brand: { id: number; name: string };
+  Categories: { id: number; name: string };
 }
 
 interface alertValues {
@@ -34,13 +40,15 @@ interface Props {
   setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
   setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
   setProducts: React.Dispatch<React.SetStateAction<TableData[]>>;
+  loadproducts: () => void;
 }
 
 const ProductsTable: React.FC<Props> = ({
   values,
   setFeedbackData,
   setShowFeedback,
-  setProducts
+  setProducts,
+  loadproducts
 }) => {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [updateId, setUpdateId] = useState<number | null>(null);
@@ -64,6 +72,10 @@ const ProductsTable: React.FC<Props> = ({
     setShowCarouselModal(true);
   }
 
+  useEffect(() => {
+    console.log(values);
+  }, []);
+
   return (
     <>
       <CarouselModal
@@ -78,7 +90,7 @@ const ProductsTable: React.FC<Props> = ({
         setShow={setShowDeleteModal}
         setFeedbackData={setFeedbackData}
         setShowFeedback={setShowFeedback}
-        setProducts={setProducts}
+        loadproducts={loadproducts}
       />
       <UpdateProductModal
         updateId={updateId}
@@ -87,6 +99,7 @@ const ProductsTable: React.FC<Props> = ({
         setFeedbackData={setFeedbackData}
         setShowFeedback={setShowFeedback}
         setProducts={setProducts}
+        loadproducts={loadproducts}
       />
 
       <Table
@@ -110,7 +123,7 @@ const ProductsTable: React.FC<Props> = ({
           </tr>
         </thead>
         <tbody>
-          {values &&
+          {!!values?.length &&
             values.map(data => (
               <tr key={data.id}>
                 <th scope="row">{data.id}</th>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import { Form, Col, Button, Spinner } from "react-bootstrap";
 import { Formik } from "formik";
@@ -12,15 +12,6 @@ const schema = yup.object({
     .required()
     .label("Quantity")
 });
-
-interface TableData {
-  id: number;
-  quantity: number;
-  id_product: number;
-  Products: {
-    name: string;
-  };
-}
 
 interface alertValues {
   variant:
@@ -40,18 +31,18 @@ interface Props {
   handleCloseModal: () => void;
   setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
   setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
-  setStock: React.Dispatch<React.SetStateAction<TableData[]>>;
   initialValues: { quantity: number };
   stockId: number | null;
+  loadStock: () => void;
 }
 
 export const UpdateProductForm: React.FC<Props> = ({
   handleCloseModal,
-  setStock,
   setFeedbackData,
   setShowFeedback,
   initialValues,
-  stockId
+  stockId,
+  loadStock
 }) => {
   return (
     <Formik
@@ -73,11 +64,6 @@ export const UpdateProductForm: React.FC<Props> = ({
             resetForm({});
             setSubmitting(false);
             handleCloseModal();
-            const loadStock: any = async () => {
-              const { data } = await api.get("/api/stock");
-
-              setStock(data);
-            };
             loadStock();
           }
         } catch (err) {

@@ -4,11 +4,11 @@ import UpdateStockForm from "../UpdateStockForm";
 import api from "../../../../services/Api";
 
 interface TableData {
-  id: number;
-  quantity: number;
-  id_product: number;
-  Products: {
-    name: string;
+  name: string;
+  Stock: {
+    id: number;
+    quantity: number;
+    id_product: number;
   };
 }
 
@@ -33,7 +33,7 @@ interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
   setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
-  setStock: React.Dispatch<React.SetStateAction<TableData[]>>;
+  loadAllStock: () => void;
 }
 
 export const UpdateStockModal: React.FC<Props> = ({
@@ -41,9 +41,9 @@ export const UpdateStockModal: React.FC<Props> = ({
   setShow,
   stockId,
   setFeedbackData,
-  setStock,
   setShowFeedback,
-  productId
+  productId,
+  loadAllStock
 }) => {
   const [formValues, setFormValues] = useState<any>(null);
   function handleClose(): void {
@@ -62,7 +62,7 @@ export const UpdateStockModal: React.FC<Props> = ({
   }, [stockId]);
 
   const initialValues: { quantity: number } = {
-    quantity: formValues?.quantity
+    quantity: formValues?.Stock.quantity
   };
 
   return (
@@ -80,8 +80,8 @@ export const UpdateStockModal: React.FC<Props> = ({
         </Modal.Header>
         <Modal.Body>
           <UpdateStockForm
+            loadStock={loadAllStock}
             setFeedbackData={setFeedbackData}
-            setStock={setStock}
             setShowFeedback={setShowFeedback}
             handleCloseModal={handleClose}
             stockId={stockId}

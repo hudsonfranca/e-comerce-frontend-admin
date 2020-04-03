@@ -3,36 +3,20 @@ import { Modal } from "react-bootstrap";
 import UpdateProductForm from "../UpdateProductForm";
 import api from "../../../../services/Api";
 
-interface FormValues {
-  id: number | undefined;
-  name: string | undefined;
-  description: string | undefined;
-  price: string | undefined;
-  status: string | undefined;
-  Brand: { id: string; name: string } | undefined;
-  Categories: { id: number; name: string }[] | undefined;
-  Images: { url: string }[] | undefined;
-}
-
 interface TableData {
   id: number;
   name: string;
   description: string;
   price: string;
   status: boolean;
-  Images: { url: string }[];
+  Images: {
+    image: string;
+    id: number;
+    id_product: number;
+    aspect_ratio: string;
+  }[];
   Brand: { id: number; name: string };
-}
-
-interface InitialValues {
-  id: number | undefined;
-  name: string | undefined;
-  description: string | undefined;
-  price: string | undefined;
-  status: string | undefined;
-  Brand: { id: string; name: string } | undefined;
-  Categories: { id: number; name: string } | undefined;
-  Images: { url: string }[] | undefined;
+  Categories: { id: number; name: string };
 }
 
 interface alertValues {
@@ -56,6 +40,7 @@ interface Props {
   setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
   setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
   setProducts: React.Dispatch<React.SetStateAction<TableData[]>>;
+  loadproducts: () => void;
 }
 
 export const UpdateProductModal: React.FC<Props> = ({
@@ -64,7 +49,8 @@ export const UpdateProductModal: React.FC<Props> = ({
   updateId,
   setFeedbackData,
   setProducts,
-  setShowFeedback
+  setShowFeedback,
+  loadproducts
 }) => {
   const [formValues, setFormValues] = useState<any>(null);
   function handleClose(): void {
@@ -73,13 +59,13 @@ export const UpdateProductModal: React.FC<Props> = ({
   }
 
   useEffect(() => {
-    async function loadProduct() {
+    async function loadProductToFrorm() {
       if (updateId) {
         const { data } = await api.get(`/api/products/${updateId}`);
         setFormValues(data);
       }
     }
-    loadProduct();
+    loadProductToFrorm();
   }, [updateId]);
 
   const initialValues: any = {
@@ -112,6 +98,7 @@ export const UpdateProductModal: React.FC<Props> = ({
             handleCloseModal={handleClose}
             initialValues={initialValues}
             updateId={updateId}
+            loadproducts={loadproducts}
           />
         </Modal.Body>
       </Modal>

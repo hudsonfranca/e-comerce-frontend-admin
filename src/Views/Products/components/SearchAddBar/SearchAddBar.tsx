@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import { Form, FormControl, Button } from "react-bootstrap";
-import { Formik } from "formik";
-import * as yup from "yup";
-import api from "../../../../services/Api";
 
 interface Props {
   onSubmit: (event: React.FormEvent<HTMLFormElement>, data: any) => void;

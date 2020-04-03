@@ -8,7 +8,7 @@ interface Props {
 
 const Main: React.FC<Props> = ({ children }) => {
   return (
-    <Container fluid className=" mt-1" id="MainContainer">
+    <Container fluid className="mt-1" id="MainContainer">
       {children}
     </Container>
   );

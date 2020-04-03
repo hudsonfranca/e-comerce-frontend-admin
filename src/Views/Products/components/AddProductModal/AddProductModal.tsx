@@ -2,25 +2,6 @@ import React from "react";
 import { Modal } from "react-bootstrap";
 import AddProductForm from "../AddProductForm";
 
-interface FormValues {
-  name: string;
-  description: string;
-  price: string;
-  status: string;
-  brand_id: string;
-  categorie: string;
-}
-
-interface TableData {
-  id: number;
-  name: string;
-  description: string;
-  price: string;
-  status: boolean;
-  Images: { url: string }[];
-  Brand: { id: number; name: string };
-}
-
 interface alertValues {
   variant:
     | "danger"
@@ -40,15 +21,17 @@ interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>;
   setFeedbackData: React.Dispatch<React.SetStateAction<alertValues>>;
-  setProducts: React.Dispatch<React.SetStateAction<TableData[]>>;
+
+  loadproducts: () => void;
 }
 
 export const AddProductModal: React.FC<Props> = ({
   show,
   setShow,
   setFeedbackData,
-  setProducts,
-  setShowFeedback
+
+  setShowFeedback,
+  loadproducts
 }) => {
   function handleClose(): void {
     setShow(false);
@@ -67,9 +50,9 @@ export const AddProductModal: React.FC<Props> = ({
       <Modal.Body>
         <AddProductForm
           setFeedbackData={setFeedbackData}
-          setProducts={setProducts}
           setShowFeedback={setShowFeedback}
           handleCloseModal={handleClose}
+          loadproducts={loadproducts}
         />
       </Modal.Body>
     </Modal>

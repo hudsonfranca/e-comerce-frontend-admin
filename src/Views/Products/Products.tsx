@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import api from "../../services/Api";
 import {
   Table,
-  Pagination,
   SearchAddBar,
   AlertFeedback,
   AddProductModal
 } from "./components";
 import { Row, Col } from "react-bootstrap";
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import Pagination from "material-ui-flat-pagination";
+import CssBaseline from "@material-ui/core/CssBaseline";
 import "../../styles/css/ProductsPage.css";
 
 interface alertValues {
@@ -30,23 +32,40 @@ interface TableData {
   description: string;
   price: string;
   status: boolean;
-  Images: { url: string }[];
+  Images: {
+    image: string;
+    id: number;
+    id_product: number;
+    aspect_ratio: string;
+  }[];
   Brand: { id: number; name: string };
+  Categories: { id: number; name: string };
 }
+
+const theme = createMuiTheme();
 
 export const Products: React.FC = () => {
   const [products, setProducts] = useState<TableData[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [productsPerPage] = useState<number>(10);
+  const [offset, setOffset] = useState(0);
+
+  const [TotalProducts, setTotalProducts] = useState(0);
+
+  function handleClickPagination(offset: number) {
+    setOffset(offset);
+  }
+
+  async function loadproducts() {
+    const { data } = await api.get(`/api/products/${offset}/${10}`);
+
+    if (data) {
+      setProducts(data.rows);
+      setTotalProducts(data.count);
+    }
+  }
 
   useEffect(() => {
-    async function loadproducts() {
-      const { data } = await api.get("/api/products");
-
-      setProducts(data);
-    }
     loadproducts();
-  }, []);
+  }, [offset]);
 
   async function handleSubmit(
     event: React.FormEvent<HTMLFormElement>,
@@ -69,18 +88,6 @@ export const Products: React.FC = () => {
     variant: "success"
   });
 
-  // Get current posts
-
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currenProducts = products.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
-
-  //Change page
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
   const [ShowAddProdModal, setShowAddProdModal] = useState(false);
 
   return (
@@ -88,10 +95,11 @@ export const Products: React.FC = () => {
       <AddProductModal
         show={ShowAddProdModal}
         setFeedbackData={setFeedbackData}
-        setProducts={setProducts}
         setShow={setShowAddProdModal}
         setShowFeedback={setShowFeedback}
+        loadproducts={loadproducts}
       />
+
       <Row>
         <Col sm={12}>
           <AlertFeedback
@@ -113,25 +121,31 @@ export const Products: React.FC = () => {
         </Col>
       </Row>
 
-      <Row className="rowMinHeight">
+      <Row className="row_Table_Products_MinHeight">
         <Col sm={12}>
           <Table
-            values={currenProducts}
+            values={products}
             setFeedbackData={setFeedbackData}
             setShowFeedback={setShowFeedback}
             setProducts={setProducts}
+            loadproducts={loadproducts}
           />
         </Col>
       </Row>
 
       <Row>
-        <Col sm={12}>
-          <Pagination
-            productsPerPage={productsPerPage}
-            totalproducts={products.length}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
+        <Col sm={12} className="col_products_Pagination">
+          <MuiThemeProvider theme={theme}>
+            <CssBaseline />
+            <Pagination
+              limit={10}
+              offset={offset}
+              total={TotalProducts}
+              onClick={(e, offset) => handleClickPagination(offset)}
+              size="large"
+              otherPageColor="primary"
+            />
+          </MuiThemeProvider>
         </Col>
       </Row>
     </>
