@@ -67,7 +67,7 @@ const UpdateModal: React.FC<Props> = ({
   useEffect(() => {
     async function loadCustomerInitialValues() {
       if (customerId) {
-        const { data } = await api.get(`/api/customer/${customerId}`);
+        const { data } = await api.get(`/api/customer/${customerId}/show`);
         setFormValues(data);
       }
     }
