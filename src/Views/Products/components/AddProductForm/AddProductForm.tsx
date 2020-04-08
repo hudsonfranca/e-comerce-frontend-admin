@@ -8,36 +8,17 @@ import * as yup from "yup";
 import "../../../../styles/css/AddProductForm.css";
 
 const schema = yup.object({
-  name: yup
-    .string()
-    .required()
-    .label("Name"),
-  description: yup
-    .string()
-    .required()
-    .label("Description"),
+  name: yup.string().required().label("Name"),
+  description: yup.string().required().label("Description"),
   price: yup
     .number()
     .typeError("Price must be a number")
     .required()
     .label("Price"),
-  status: yup
-    .string()
-    .required()
-    .label("Status"),
-  brand_id: yup
-    .number()
-    .required()
-    .label("Brand"),
-  categorie_id: yup
-    .string()
-    .required()
-    .label("Categorie"),
-  quantity: yup
-    .string()
-    .required()
-    .min(0)
-    .label("Quantity")
+  status: yup.string().required().label("Status"),
+  brand_id: yup.number().required().label("Brand"),
+  categorie_id: yup.string().required().label("Categorie"),
+  quantity: yup.string().required().min(0).label("Quantity"),
 });
 
 interface ProductValues {
@@ -77,7 +58,7 @@ export const AddProductForm: React.FC<Props> = ({
 
   setFeedbackData,
   setShowFeedback,
-  loadproducts
+  loadproducts,
 }) => {
   const [brand, setBrand] = useState<{ id: number; name: string }[]>();
   const [categories, setCategories] = useState<
@@ -107,7 +88,7 @@ export const AddProductForm: React.FC<Props> = ({
     status: "",
     brand_id: "",
     categorie_id: "",
-    quantity: ""
+    quantity: "",
   };
 
   const [files, setFiles] = useState<any>([]);
@@ -130,7 +111,7 @@ export const AddProductForm: React.FC<Props> = ({
 
               uploadImagesPromisses.push(
                 api.post(
-                  `/api/product/${data}/images/${uploadedFile.aspectRatio}`,
+                  `/api/product/${data.id}/images/${uploadedFile.aspectRatio}`,
                   imageFormData
                 )
               );
@@ -138,7 +119,7 @@ export const AddProductForm: React.FC<Props> = ({
             Promise.all(uploadImagesPromisses).then((response: any) => {
               setFeedbackData({
                 message: "The product has been successfully registered.",
-                variant: "success"
+                variant: "success",
               });
               setShowFeedback(true);
               resetForm({});
@@ -150,7 +131,7 @@ export const AddProductForm: React.FC<Props> = ({
         } catch (err) {
           setFeedbackData({
             message: "It was not possible to register this product.",
-            variant: "danger"
+            variant: "danger",
           });
           setShowFeedback(true);
           resetForm({});
@@ -169,7 +150,7 @@ export const AddProductForm: React.FC<Props> = ({
         touched,
         isValid,
         errors,
-        isSubmitting
+        isSubmitting,
       }: FormikProps<ProductValues>) => (
         <Form onSubmit={handleSubmit}>
           <Form.Row>

@@ -67,8 +67,8 @@ export const Customers: React.FC = () => {
     const { data } = await api.get("/api/customer", {
       params: {
         offset,
-        limit: 10
-      }
+        limit: 10,
+      },
     });
     if (data) {
       setCustomers(data.rows);
@@ -84,7 +84,7 @@ export const Customers: React.FC = () => {
 
   const [feedbackData, setFeedbackData] = useState<alertValues>({
     message: "",
-    variant: "success"
+    variant: "success",
   });
 
   async function handleSubmit(
@@ -101,14 +101,14 @@ export const Customers: React.FC = () => {
       } else {
         setFeedbackData({
           message: "Try a different search id.",
-          variant: "warning"
+          variant: "warning",
         });
         setShowFeedback(true);
       }
     } catch (err) {
       setFeedbackData({
         message: "Try a different search id.",
-        variant: "warning"
+        variant: "warning",
       });
       setShowFeedback(true);
     }

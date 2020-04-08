@@ -4,7 +4,7 @@ import {
   Table,
   SearchAddBar,
   AlertFeedback,
-  AddProductModal
+  AddProductModal,
 } from "./components";
 import { navbarContext } from "../../NavbarContext";
 import { Row, Col } from "react-bootstrap";
@@ -63,7 +63,12 @@ export const Products: React.FC = () => {
   }
 
   async function loadproducts() {
-    const { data } = await api.get(`/api/products/${offset}/${10}`);
+    const { data } = await api.get(`/api/products`, {
+      params: {
+        offset,
+        limit: 10,
+      },
+    });
 
     if (data) {
       setProducts(data.rows);
@@ -93,7 +98,7 @@ export const Products: React.FC = () => {
 
   const [feedbackData, setFeedbackData] = useState<alertValues>({
     message: "",
-    variant: "success"
+    variant: "success",
   });
 
   const [ShowAddProdModal, setShowAddProdModal] = useState(false);

@@ -8,31 +8,16 @@ import * as yup from "yup";
 import "../../../../styles/css/UpdateProductForm.css";
 
 const schema = yup.object({
-  name: yup
-    .string()
-    .required()
-    .label("Name"),
-  description: yup
-    .string()
-    .required()
-    .label("Description"),
+  name: yup.string().required().label("Name"),
+  description: yup.string().required().label("Description"),
   price: yup
     .number()
     .typeError("Price must be a number")
     .required()
     .label("Price"),
-  status: yup
-    .string()
-    .required()
-    .label("Status"),
-  brand_id: yup
-    .string()
-    .required()
-    .label("Brand"),
-  Categories: yup
-    .string()
-    .required()
-    .label("Categorie")
+  status: yup.string().required().label("Status"),
+  brand_id: yup.string().required().label("Brand"),
+  Categories: yup.string().required().label("Categorie"),
 });
 
 interface TableData {
@@ -84,7 +69,7 @@ export const AddProductForm: React.FC<Props> = ({
   setShowFeedback,
   initialValues,
   updateId,
-  loadproducts
+  loadproducts,
 }) => {
   const [brand, setBrand] = useState<{ id: number; name: string }[] | null>(
     null
@@ -114,7 +99,6 @@ export const AddProductForm: React.FC<Props> = ({
       initialValues={initialValues}
       validationSchema={schema}
       onSubmit={async (values: any, { setSubmitting, resetForm }) => {
-        console.log(values);
         try {
           setSubmitting(true);
           const { data } = await api.put(
@@ -139,7 +123,7 @@ export const AddProductForm: React.FC<Props> = ({
             Promise.all(uploadImagesPromisses).then((response: any) => {
               setFeedbackData({
                 message: "The product has been successfully update.",
-                variant: "success"
+                variant: "success",
               });
               setShowFeedback(true);
               resetForm({});
@@ -150,7 +134,7 @@ export const AddProductForm: React.FC<Props> = ({
           } else if (data && !files.length) {
             setFeedbackData({
               message: "The product has been successfully update.",
-              variant: "success"
+              variant: "success",
             });
             setShowFeedback(true);
             resetForm({});
@@ -166,7 +150,7 @@ export const AddProductForm: React.FC<Props> = ({
         } catch (err) {
           setFeedbackData({
             message: "It was not possible to update the data for this product.",
-            variant: "danger"
+            variant: "danger",
           });
           setShowFeedback(true);
           resetForm({});
@@ -185,7 +169,7 @@ export const AddProductForm: React.FC<Props> = ({
         touched,
         isValid,
         errors,
-        isSubmitting
+        isSubmitting,
       }) => (
         <Form onSubmit={handleSubmit}>
           <Form.Row>

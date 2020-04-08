@@ -53,7 +53,12 @@ export const Stock: React.FC = () => {
 
   async function loadStock() {
     try {
-      const { data } = await api.get(`/api/stock/${offset}/${10}`);
+      const { data } = await api.get(`/api/stock`, {
+        params: {
+          offset,
+          limit: 10,
+        },
+      });
 
       if (data) {
         setStock(data.rows);
@@ -72,7 +77,7 @@ export const Stock: React.FC = () => {
 
   const [feedbackData, setFeedbackData] = useState<alertValues>({
     message: "",
-    variant: "success"
+    variant: "success",
   });
   return (
     <>
