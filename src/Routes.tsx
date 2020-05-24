@@ -6,8 +6,8 @@ import { Error404 } from "./components";
 const Routes: React.FC = () => {
   return (
     <Switch>
-      <Route path="/" exact component={SignIn} />
-      <Route path="/customers" component={Customers} />
+      {/* <Route path="/" exact component={SignIn} /> */}
+      <Route path="/" exact component={Customers} />
       <Route path="/products" component={Products} />
       <Route path="/stock" component={Stock} />
       <Route path="/orders" component={Orders} />

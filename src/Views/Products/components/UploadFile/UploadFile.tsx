@@ -100,7 +100,7 @@ export const UploadFile: React.FC<Props> = ({ setFiles, files, updateId }) => {
     }
   }, []);
 
-  const maxSize = 1048576;
+  const maxSize = 3048576;
 
   const {
     isDragActive,
@@ -115,6 +115,7 @@ export const UploadFile: React.FC<Props> = ({ setFiles, files, updateId }) => {
     minSize: 0,
     maxSize,
     multiple: true,
+
     onDropAccepted
   });
 

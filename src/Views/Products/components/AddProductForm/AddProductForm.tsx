@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-
 import { Form, Col, Button, Spinner } from "react-bootstrap";
+import NumberFormat from 'react-number-format';
 import { Formik, FormikProps } from "formik";
 import api from "../../../../services/Api";
 import UploadFile from "../UploadFile";
@@ -18,7 +18,7 @@ const schema = yup.object({
   status: yup.string().required().label("Status"),
   brand_id: yup.number().required().label("Brand"),
   categorie_id: yup.string().required().label("Categorie"),
-  quantity: yup.string().required().min(0).label("Quantity"),
+  quantity: yup.number().required().min(0).label("Quantity"),
 });
 
 interface ProductValues {
@@ -172,17 +172,20 @@ export const AddProductForm: React.FC<Props> = ({
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Price</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Price"
-                name="price"
-                value={values.price}
-                onChange={handleChange}
-                isValid={touched.price && !errors.price}
-                isInvalid={!!errors.price}
-                onBlur={handleBlur}
-              />
+
+
+          <NumberFormat
+          customInput={Form.Control}
+            decimalSeparator={'.'}
+            type="text"
+            placeholder="Price"
+            name="price"
+            value={values.price}
+            onChange={handleChange}
+            isValid={touched.price && !errors.price}
+            isInvalid={!!errors.price}
+            onBlur={handleBlur}
+            />
 
               <Form.Control.Feedback type="invalid">
                 {errors.price}

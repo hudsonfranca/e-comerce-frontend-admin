@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import NumberFormat from 'react-number-format';
 import { Form, Col, Button, Spinner } from "react-bootstrap";
 import { Formik } from "formik";
 import api from "../../../../services/Api";
@@ -192,16 +192,19 @@ export const AddProductForm: React.FC<Props> = ({
 
             <Form.Group as={Col} controlId="formGridEmail">
               <Form.Label>Price</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Price"
-                name="price"
-                value={values.price}
-                onChange={handleChange}
-                isValid={touched.price && !errors.price}
-                isInvalid={!!errors.price}
-                onBlur={handleBlur}
-              />
+
+               <NumberFormat
+          customInput={Form.Control}
+            decimalSeparator={'.'}
+            type="text"
+            placeholder="Price"
+            name="price"
+            value={values.price}
+            onChange={handleChange}
+            isValid={touched.price && !errors.price}
+            isInvalid={!!errors.price}
+            onBlur={handleBlur}
+            />
 
               <Form.Control.Feedback type="invalid">
                 {errors.price}

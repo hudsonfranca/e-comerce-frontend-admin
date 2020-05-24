@@ -34,7 +34,7 @@ const CustoNavbar: React.FC<Props> = () => {
           {showNavItems && (
             <>
               <Nav className="mr-auto">
-                <Link to="/customers" className="nav-link">
+                <Link to="/" className="nav-link">
                   Customers
                 </Link>
                 <Link to="/products" className="nav-link">
