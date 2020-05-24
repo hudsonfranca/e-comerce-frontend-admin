@@ -172,7 +172,7 @@ export const AddProductForm: React.FC<Props> = ({
             </Form.Group>
 
             <Form.Group as={Col} controlId="formGridEmail">
-
+            <Form.Label>Price</Form.Label>
 
           <NumberFormat
           customInput={Form.Control}
